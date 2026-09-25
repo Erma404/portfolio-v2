@@ -1,26 +1,164 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafafa;
+  --foreground: #0a0a0a;
+  --accent: #16412f;
+  --accent-soft: #e7ede9;
+  --muted: #6b6b6b;
+  --border: #e3e3e0;
+  --badge-green: #8fe36a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-badge-green: var(--badge-green);
+  --font-display: var(--font-inter-tight);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-instrument-serif);
+  --font-hand: var(--font-caveat);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
+
+/* Marquee */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 32s linear infinite;
+}
+
+.marquee-group:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Testimonials capsule */
+@keyframes sweep-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sweep-spin {
+  animation: sweep-rotate 6s linear infinite;
+}
+
+@keyframes flag-pulse {
+  0%,
+  55%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 0.18;
+    transform: scale(1.1);
+  }
+}
+
+.flag-pulse {
+  animation: flag-pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes flag-float {
+  0%,
+  100% {
+    translate: -50% -50%;
+  }
+  50% {
+    translate: -50% calc(-50% - 4px);
+  }
+}
+
+.flag-float {
+  animation: flag-float 4s ease-in-out infinite;
+}
+
+/* Footer */
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  95% {
+    opacity: 0;
+  }
+}
+
+.typewriter-caret {
+  animation: caret-blink 1s step-end infinite;
+}
+
+.badge-spin {
+  animation: sweep-rotate 22s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-caret,
+  .badge-spin,
+  .sweep-spin,
+  .flag-pulse,
+  .flag-float,
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Animated underline link */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track {
+    animation: none;
+  }
 }
