@@ -182,7 +182,8 @@ export const caseStudiesEn: CaseStudy[] = [
       },
     ],
     approach: {
-      intro: "Lovable as the design workshop, WordPress as the production site.",
+      intro:
+        "Lovable as the design workshop, WordPress as the production site.",
       steps: [
         {
           title: "Design fast on Lovable",
@@ -241,9 +242,10 @@ export const caseStudiesEn: CaseStudy[] = [
   {
     slug: "hello-bank",
     client: "Hello bank!",
-    title: "Hello bank!, reducing churn through better journeys",
+    title:
+      "Hello bank!, from the Orange Bank migration to an anti-churn program",
     summary:
-      "Product Owner / Product Manager on the customer area of BNP Paribas's mobile bank: anti-churn program, A/B testing and a redesign of the Discover Hub.",
+      "Product Owner at Hello bank! (BNP Paribas): 5 projects in 3 years, from migrating Orange Bank customers to integrating an e-invoicing tool, in Agile SAFe.",
     period: "2023 – 2026",
     kind: "Product Owner / Product Manager",
     tint: "from-[#dfe6ff] via-[#8fa3f5] to-[#1d3ec9]",
@@ -257,55 +259,61 @@ export const caseStudiesEn: CaseStudy[] = [
     meta: {
       role: "Product Owner / Product Manager",
       period: "2023 – 2026",
-      tools: "Adobe Analytics, Contentsquare, AEM, A/B testing",
-      team: "Product designers, developers, CRO Lead, customer relations teams",
+      tools: "Agile SAFe, Adobe Analytics, Contentsquare, AEM, A/B testing",
+      team: "BNP POs (savings, credit, trading), data team, CRO Lead, IT, Compliance, Legal",
     },
     context: [
-      "Hello bank! is the 100% mobile bank of the BNP Paribas group. I was Product Owner / Product Manager on the logged-in customer area, on mobile and web.",
-      "My main mission: reduce customer churn through smarter journeys and personalized nudges.",
+      "Hello bank! is the 100% mobile bank of the BNP Paribas group. I was Product Owner / Product Manager there from 2023 to 2026, on the logged-in customer area, on mobile and web.",
+      "5 projects in 3 years, from moving customers to the app to integrating business tools, on a technical platform shared by BNP Paribas and Hello bank!.",
     ],
     problem: {
-      intro: "The bank was facing a wave of departures.",
+      intro:
+        "Three challenges followed one another: welcoming Orange Bank's customers, keeping them, and meeting a new regulatory obligation.",
       points: [
-        "100,000 customers lost, including 80,000 account closures linked to the Orange Bank migration.",
+        "Orange Bank migration: 100,000 customers lost, including 80,000 closures linked to the migration.",
         "A dormancy problem around the €180 bonus.",
+        "The e-invoicing obligation to meet by September 2026.",
       ],
     },
     role: [
       {
-        title: "Discovery",
-        text: "Interviews with stakeholders (COO, customer advisors, support) and workshops to map friction points.",
+        title: "Migration lead",
+        text: "App-only migration journey from Orange Bank to Hello bank! delivered in 3 months, from vision to production, reporting to the steering and executive committees.",
       },
       {
-        title: "Strategy and roadmap",
-        text: "Roadmap for the anti-churn program, prioritizing high-impact features, aligning CRO initiatives with UX guidelines.",
+        title: "Backlog in Agile SAFe",
+        text: "Backlog prioritization on the shared BNP/Hello bank! platform, paired with the BNP savings, credit and trading POs.",
       },
       {
-        title: "Co-design",
-        text: "Workshops with product designers to build strategic journeys, such as the smart account-closure flow.",
+        title: "Compliance",
+        text: "Integrating an e-invoicing tool with partner OneUp, coordinating IT, Compliance and Legal.",
       },
       {
-        title: "Delivery and measurement",
-        text: "User stories, coordinating design, dev and CRO teams; A/B tests with the CRO Lead and KPI tracking.",
+        title: "Anti-churn program",
+        text: "In-app nudges and A/B tests with the data team and the CRO Lead, tracking engagement and churn KPIs.",
       },
     ],
     approach: {
       steps: [
         {
+          title: "Frame the migration",
+          text: "Vision, scope and planning of the app-only journey, approved by the steering then executive committee.",
+        },
+        {
+          title: "Prioritize in SAFe",
+          text: "A backlog shared with the BNP POs to move forward on a common platform without blocking each other.",
+        },
+        {
           title: "Understand the departures",
           text: "Cross field feedback (support, advisors) with data from Adobe Analytics and Contentsquare.",
         },
         {
-          title: "Prioritize",
-          text: "An anti-churn roadmap focused on the highest-impact levers: closure, dormancy, engagement.",
-        },
-        {
           title: "Design and test",
-          text: "Personalized nudges on mobile and web and a redesigned closure flow, validated through A/B tests.",
+          text: "In-app nudges and redesigned journeys, validated through A/B tests with the data team.",
         },
         {
-          title: "Redesign the Discover Hub",
-          text: "Redesign of the Discover Hub in the customer area.",
+          title: "Secure compliance",
+          text: "E-invoicing integrated with OneUp ahead of the regulatory deadline, with IT, Compliance and Legal.",
         },
       ],
     },
@@ -328,17 +336,22 @@ export const caseStudiesEn: CaseStudy[] = [
       },
     ],
     impact: {
-      stats: [{ value: "-20%", label: "Customer service contacts after release" }],
+      stats: [
+        { value: "+20%", label: "Conversion" },
+        { value: "+100K", label: "New customers" },
+        { value: "+10%", label: "App engagement" },
+        { value: "-20%", label: "Customer service contacts" },
+      ],
       points: [
-        "Better retention through mobile and web nudges.",
-        "Stronger collaboration between UX, acquisition and CRO.",
-        "A reusable UX framework for the following journeys.",
+        "App-only migration delivered in 3 months.",
+        "Churn steadily decreasing thanks to nudges and A/B tests.",
+        "Stronger collaboration between UX, data, CRO, IT and Compliance.",
       ],
     },
     learnings: [
       "Churn is fixed in the journeys as much as in the offers.",
-      "Support teams see friction before dashboards do: listening to them early saves sprints.",
-      "A well-framed A/B test settles debates faster than a meeting.",
+      "On a shared platform, pairing with the other POs matters as much as the backlog itself.",
+      "A regulatory deadline is run like a product: framing, milestones, testing.",
     ],
   },
   {
@@ -367,16 +380,48 @@ export const caseStudiesEn: CaseStudy[] = [
       "Catenda publishes a SaaS platform for BIM collaboration in construction: everyone on a project shares and comments on the building's digital models.",
       "The project covered web design, a new visual identity and a multilingual website (catenda.com/fr).",
     ],
+    problem: {
+      intro:
+        "Presenting a technical product to varied audiences, in several languages, with a refreshed visual identity.",
+    },
     role: [
+      {
+        title: "Framing",
+        text: "Gathering requirements and defining the scope: pages, languages, templates.",
+      },
       {
         title: "Web design",
         text: "Web design of the site, based on the new visual identity.",
       },
       {
-        title: "Multilingual site",
-        text: "Setting up a multilingual website, including the French version (catenda.com/fr).",
+        title: "Project management",
+        text: "Planning, coordinating design, development and the client, tracking approvals.",
+      },
+      {
+        title: "Multilingual site and testing",
+        text: "Setting up the multilingual site, including the French version, and testing before launch.",
       },
     ],
+    approach: {
+      steps: [
+        {
+          title: "Frame",
+          text: "Align scope, languages and planning with the client.",
+        },
+        {
+          title: "Apply the identity",
+          text: "Roll out the new identity: colors, typography, tone.",
+        },
+        {
+          title: "Build the multilingual site",
+          text: "Organize content and language versions.",
+        },
+        {
+          title: "Test and ship",
+          text: "Check every version before going live.",
+        },
+      ],
+    },
     gallery: [
       {
         src: "/img/works/catenda/site-collaborate.avif",
@@ -402,6 +447,16 @@ export const caseStudiesEn: CaseStudy[] = [
         frame: "plain",
         caption: "And on mobile",
       },
+    ],
+    impact: {
+      points: [
+        "A refreshed, consistent visual identity across the whole site.",
+        "A multilingual site delivered, including the French version.",
+      ],
+    },
+    learnings: [
+      "A technical product sells better shown than explained: product visuals carry the message.",
+      "In a multilingual project, lock the site map before translating, not after.",
     ],
   },
   {
@@ -529,10 +584,10 @@ export const caseStudiesEn: CaseStudy[] = [
   {
     slug: "orange-money",
     client: "Orange Money",
-    title: "Orange Money, digital acquisition in West Africa",
+    title: "Orange Money, a digital strategy across 4 markets",
     summary:
-      "Business analyst (AMOA) for the Digital Strategy Department: landing pages, SEO, acquisition journeys and executive committee governance, within a team of about 60 people.",
-    period: "2018",
+      "Digital strategy consultant and business analyst (AMOA): defined and rolled out Orange Money's digital strategy from scratch across 4 high-growth markets in Africa and the Middle East.",
+    period: "2017 – 2020",
     kind: "Business analyst (AMOA)",
     tint: "from-[#ffe2c7] via-[#ff9a4d] to-[#e8590c]",
     cover: {
@@ -543,28 +598,62 @@ export const caseStudiesEn: CaseStudy[] = [
       frame: "plain",
     },
     meta: {
-      role: "Business analyst (AMOA), Digital Strategy Department",
-      period: "2018",
+      role: "Digital strategy consultant / Business analyst (AMOA)",
+      period: "2017 – 2020",
       tools: "",
-      team: "A team of about 60 people",
+      team: "About 60 people: Marketing, IT, Compliance, partner operators and local teams",
     },
     context: [
-      "Orange Money is Orange's mobile payment service in Africa. I worked as a business analyst (AMOA) for the Digital Strategy Department, on digital strategy and acquisition in West Africa.",
+      "Orange Money is the Orange group's mobile payment service, present in more than 26 countries. I worked as a digital strategy consultant and business analyst (AMOA) for the Digital Strategy Department.",
+      "The mission: define and roll out Orange Money's digital strategy from scratch across 4 high-growth markets in Africa and the Middle East.",
     ],
+    problem: {
+      intro:
+        "Launching a mobile payment service in 4 countries means handling 4 regulatory frameworks, 4 partner ecosystems and as many local teams.",
+      points: [
+        "Regulatory compliance specific to each market.",
+        "Partner operators and local teams to coordinate, market by market.",
+        "End-to-end digital journeys to design: acquisition, transfers, top-ups.",
+      ],
+    },
     role: [
       {
-        title: "Acquisition",
-        text: "Landing pages and app acquisition journeys.",
+        title: "Digital strategy",
+        text: "Defined and rolled out Orange Money's digital strategy from scratch across 4 markets.",
       },
       {
-        title: "SEO",
-        text: "Search visibility of the Orange Money pages.",
+        title: "Business framing",
+        text: "Gathered requirements with Marketing, IT and Compliance, and handled each market's regulatory compliance.",
       },
       {
-        title: "Governance",
-        text: "Preparing and following up executive committee decisions.",
+        title: "Journeys and acquisition",
+        text: "Designed end-to-end digital journeys (acquisition, transfers, top-ups), landing pages and SEO campaigns per market.",
+      },
+      {
+        title: "Delivery and governance",
+        text: "Coordinated partner operators and local teams, acceptance testing, performance KPIs and executive committee reporting.",
       },
     ],
+    approach: {
+      steps: [
+        {
+          title: "Frame market by market",
+          text: "Business needs, regulatory constraints and partner operators, country by country.",
+        },
+        {
+          title: "Design the journeys",
+          text: "Acquisition, transfers and top-ups designed end to end, adapted to each market.",
+        },
+        {
+          title: "Roll out",
+          text: "Coordinating local teams and operators through launch.",
+        },
+        {
+          title: "Measure and decide",
+          text: "Acceptance testing, performance KPIs and executive committee decisions.",
+        },
+      ],
+    },
     gallery: [
       {
         src: "/img/works/orange-money/app.avif",
@@ -582,6 +671,22 @@ export const caseStudiesEn: CaseStudy[] = [
         frame: "plain",
         caption: "Onboarding in the app",
       },
+    ],
+    impact: {
+      stats: [
+        { value: "4", label: "Markets launched in 12 months" },
+        { value: "+30%", label: "Revenue vs prior year" },
+        { value: "26", label: "Countries where the group operates" },
+      ],
+      points: [
+        "Launched in 4 high-growth markets within 12 months.",
+        "+30% revenue compared with the previous year.",
+        "Structured governance: acceptance testing, performance KPIs and executive reporting.",
+      ],
+    },
+    learnings: [
+      "A multi-country rollout is won market by market: same product, different framing.",
+      "Bringing Compliance in at the framing stage avoids rebuilding journeys later.",
     ],
   },
 ];

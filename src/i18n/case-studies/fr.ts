@@ -242,9 +242,9 @@ export const caseStudiesFr: CaseStudy[] = [
   {
     slug: "hello-bank",
     client: "Hello bank!",
-    title: "Hello bank!, réduire le churn par les parcours",
+    title: "Hello bank!, de la migration Orange Bank au programme anti-churn",
     summary:
-      "Product Owner / Product Manager sur l'espace client de la banque mobile de BNP Paribas : programme anti-churn, tests A/B et refonte du Hub Découvrir.",
+      "Product Owner chez Hello bank! (BNP Paribas)\u00a0: 5 projets en 3 ans, de la migration des clients Orange Bank à l'intégration d'un outil de facturation électronique, en Agile SAFe.",
     period: "2023 – 2026",
     kind: "Product Owner / Product Manager",
     tint: "from-[#dfe6ff] via-[#8fa3f5] to-[#1d3ec9]",
@@ -258,55 +258,61 @@ export const caseStudiesFr: CaseStudy[] = [
     meta: {
       role: "Product Owner / Product Manager",
       period: "2023 – 2026",
-      tools: "Adobe Analytics, Contentsquare, AEM, tests A/B",
-      team: "Product designers, développeurs, CRO Lead, équipes relation client",
+      tools: "Agile SAFe, Adobe Analytics, Contentsquare, AEM, tests A/B",
+      team: "POs BNP (épargne, crédit, bourse), équipe data, CRO Lead, IT, Compliance, Legal",
     },
     context: [
-      "Hello bank! est la banque 100 % mobile du groupe BNP Paribas. J'y étais Product Owner / Product Manager sur l'espace client connecté, sur le mobile et le web.",
-      "Ma mission principale : réduire le départ des clients grâce à des parcours plus intelligents et des incitations personnalisées.",
+      "Hello bank! est la banque 100 % mobile du groupe BNP Paribas. J'y ai été Product Owner / Product Manager de 2023 à 2026, sur l'espace client connecté, sur le mobile et le web.",
+      "5 projets en 3 ans, de la migration des clients vers l'application jusqu'à l'intégration d'outils métier, sur un socle technique commun à BNP Paribas et Hello bank!.",
     ],
     problem: {
-      intro: "La banque faisait face à une vague de départs.",
+      intro:
+        "Trois enjeux se sont succédé\u00a0: accueillir les clients d'Orange Bank, les garder, et tenir une nouvelle obligation réglementaire.",
       points: [
-        "100 000 clients perdus, dont 80 000 clôtures liées à la migration Orange Bank.",
+        "Migration Orange Bank\u00a0: 100 000 clients perdus, dont 80 000 clôtures liées à la migration.",
         "Un problème de dormance autour de la prime de 180 €.",
+        "L'obligation de facturation électronique à tenir pour septembre 2026.",
       ],
     },
     role: [
       {
-        title: "Discovery",
-        text: "Entretiens avec les stakeholders (COO, conseillers relation client, support) et ateliers pour cartographier les points de friction.",
+        title: "Pilotage de la migration",
+        text: "Parcours app-only de migration Orange Bank → Hello bank! piloté en 3 mois, de la vision à la mise en production, avec reporting au COPIL et au CODIR.",
       },
       {
-        title: "Stratégie et roadmap",
-        text: "Roadmap du programme anti-churn, priorisation des fonctionnalités à fort impact, alignement des initiatives CRO avec les guidelines UX.",
+        title: "Backlog en Agile SAFe",
+        text: "Priorisation du backlog sur le socle technique commun BNP/Hello bank!, en binôme avec les POs BNP épargne, crédit et bourse.",
       },
       {
-        title: "Co-design",
-        text: "Ateliers avec les product designers pour construire des parcours stratégiques, comme le parcours de clôture de compte intelligent.",
+        title: "Conformité",
+        text: "Intégration d'un outil de facturation électronique avec le partenaire OneUp, en coordination avec l'IT, la Compliance et le Legal.",
       },
       {
-        title: "Delivery et mesure",
-        text: "User stories, coordination des équipes design, dev et CRO ; tests A/B avec le CRO Lead et suivi des KPIs.",
+        title: "Programme anti-churn",
+        text: "Nudges in-app et tests A/B avec l'équipe data et le CRO Lead, suivi des KPIs d'engagement et de churn.",
       },
     ],
     approach: {
       steps: [
         {
+          title: "Cadrer la migration",
+          text: "Vision, découpage et planning du parcours app-only, validés en COPIL puis en CODIR.",
+        },
+        {
+          title: "Prioriser en SAFe",
+          text: "Un backlog partagé avec les POs BNP pour avancer sur un socle technique commun sans se bloquer.",
+        },
+        {
           title: "Comprendre les départs",
           text: "Croiser les retours du terrain (support, conseillers) avec les données d'Adobe Analytics et de Contentsquare.",
         },
         {
-          title: "Prioriser",
-          text: "Roadmap anti-churn centrée sur les leviers à plus fort impact : clôture, dormance, engagement.",
-        },
-        {
           title: "Concevoir et tester",
-          text: "Incitations personnalisées sur mobile et web, parcours de clôture repensé, validés par des tests A/B.",
+          text: "Nudges in-app et parcours repensés, validés par des tests A/B avec l'équipe data.",
         },
         {
-          title: "Refondre le Hub Découvrir",
-          text: "Refonte du Hub Découvrir de l'espace client.",
+          title: "Sécuriser la conformité",
+          text: "Facturation électronique intégrée avec OneUp avant l'échéance réglementaire, avec l'IT, la Compliance et le Legal.",
         },
       ],
     },
@@ -330,18 +336,21 @@ export const caseStudiesFr: CaseStudy[] = [
     ],
     impact: {
       stats: [
-        { value: "-20 %", label: "Sollicitations du service client après livraison" },
+        { value: "+20\u00a0%", label: "Conversion" },
+        { value: "+100K", label: "Nouveaux clients" },
+        { value: "+10\u00a0%", label: "Engagement sur l'app" },
+        { value: "-20\u00a0%", label: "Sollicitations du service client" },
       ],
       points: [
-        "Meilleure rétention grâce aux incitations mobile et web.",
-        "Collaboration renforcée entre UX, acquisition et CRO.",
-        "Un cadre UX réutilisable pour les parcours suivants.",
+        "Migration app-only livrée en 3 mois.",
+        "Churn en baisse constante grâce aux nudges et aux tests A/B.",
+        "Collaboration renforcée entre UX, data, CRO, IT et Compliance.",
       ],
     },
     learnings: [
       "Le churn se traite dans les parcours autant que dans les offres.",
-      "Les équipes support voient les frictions avant les dashboards : les écouter tôt fait gagner des sprints.",
-      "Un test A/B bien posé tranche les débats plus vite qu'une réunion.",
+      "Sur un socle partagé, le binôme avec les autres POs compte autant que le backlog lui-même.",
+      "Une échéance réglementaire se pilote comme un produit\u00a0: cadrage, jalons, recette.",
     ],
   },
   {
@@ -367,19 +376,51 @@ export const caseStudiesFr: CaseStudy[] = [
       team: "",
     },
     context: [
-      "Catenda édite une plateforme SaaS de collaboration BIM pour le BTP : les acteurs d'un chantier partagent et commentent les maquettes numériques du bâtiment.",
+      "Catenda édite une plateforme SaaS de collaboration BIM pour le BTP\u00a0: les acteurs d'un chantier partagent et commentent les maquettes numériques du bâtiment.",
       "Le projet portait sur le web design, une nouvelle charte graphique et un site multilingue (catenda.com/fr).",
     ],
+    problem: {
+      intro:
+        "Présenter un produit technique à des publics variés, dans plusieurs langues, avec une identité visuelle renouvelée.",
+    },
     role: [
+      {
+        title: "Cadrage",
+        text: "Recueil des besoins et définition du périmètre\u00a0: pages, langues, gabarits.",
+      },
       {
         title: "Web design",
         text: "Web design du site, sur la base de la nouvelle charte graphique.",
       },
       {
-        title: "Site multilingue",
-        text: "Mise en place d'un site multilingue, dont la version française (catenda.com/fr).",
+        title: "Pilotage",
+        text: "Planning, coordination entre design, développement et client, suivi des validations.",
+      },
+      {
+        title: "Site multilingue et recette",
+        text: "Mise en place du site multilingue, dont la version française, et recette avant mise en ligne.",
       },
     ],
+    approach: {
+      steps: [
+        {
+          title: "Cadrer",
+          text: "Aligner le périmètre, les langues et le planning avec le client.",
+        },
+        {
+          title: "Décliner la charte",
+          text: "Appliquer la nouvelle identité : couleurs, typographies, ton.",
+        },
+        {
+          title: "Produire le multilingue",
+          text: "Organiser les contenus et les versions linguistiques.",
+        },
+        {
+          title: "Recetter et livrer",
+          text: "Vérifier chaque version avant la mise en ligne.",
+        },
+      ],
+    },
     gallery: [
       {
         src: "/img/works/catenda/site-collaborate.avif",
@@ -405,6 +446,16 @@ export const caseStudiesFr: CaseStudy[] = [
         frame: "plain",
         caption: "Et sur mobile",
       },
+    ],
+    impact: {
+      points: [
+        "Une identité visuelle renouvelée et cohérente sur tout le site.",
+        "Un site multilingue livré, dont la version française.",
+      ],
+    },
+    learnings: [
+      "Un produit technique se vend mieux montré qu'expliqué\u00a0: les visuels produit portent le message.",
+      "En multilingue, on fige l'arborescence avant de traduire, pas après.",
     ],
   },
   {
@@ -532,10 +583,10 @@ export const caseStudiesFr: CaseStudy[] = [
   {
     slug: "orange-money",
     client: "Orange Money",
-    title: "Orange Money, l'acquisition digitale en Afrique de l'Ouest",
+    title: "Orange Money, une stratégie digitale sur 4 marchés",
     summary:
-      "AMOA à la Direction Stratégie Digitale : landing pages, SEO, parcours d'acquisition et gouvernance CODIR, au sein d'une équipe d'environ 60 personnes.",
-    period: "2018",
+      "Consultante stratégie digitale et AMOA\u00a0: définition et déploiement from scratch de la stratégie digitale d'Orange Money sur 4 marchés à forte croissance, en Afrique et au Moyen-Orient.",
+    period: "2017 – 2020",
     kind: "AMOA",
     tint: "from-[#ffe2c7] via-[#ff9a4d] to-[#e8590c]",
     cover: {
@@ -546,28 +597,62 @@ export const caseStudiesFr: CaseStudy[] = [
       frame: "plain",
     },
     meta: {
-      role: "AMOA, Direction Stratégie Digitale",
-      period: "2018",
+      role: "Consultante stratégie digitale / AMOA",
+      period: "2017 – 2020",
       tools: "",
-      team: "Équipe d'environ 60 personnes",
+      team: "Environ 60 personnes\u00a0: Marketing, IT, Compliance, opérateurs partenaires et équipes locales",
     },
     context: [
-      "Orange Money est le service de paiement mobile d'Orange en Afrique. J'intervenais en AMOA auprès de la Direction Stratégie Digitale, sur la stratégie digitale et l'acquisition en Afrique de l'Ouest.",
+      "Orange Money est le service de paiement mobile du groupe Orange, présent dans plus de 26 pays. J'intervenais comme consultante en stratégie digitale et AMOA auprès de la Direction Stratégie Digitale.",
+      "Mission\u00a0: définir et déployer from scratch la stratégie digitale d'Orange Money sur 4 marchés à forte croissance, en Afrique et au Moyen-Orient.",
     ],
+    problem: {
+      intro:
+        "Lancer un service de paiement mobile dans 4 pays, c'est tenir 4 cadres réglementaires, 4 écosystèmes de partenaires et autant d'équipes locales.",
+      points: [
+        "Une conformité réglementaire propre à chaque marché.",
+        "Des opérateurs partenaires et des équipes locales à coordonner, marché par marché.",
+        "Des parcours digitaux à concevoir de bout en bout\u00a0: acquisition, virement, recharge.",
+      ],
+    },
     role: [
       {
-        title: "Acquisition",
-        text: "Landing pages et parcours d'acquisition de l'application.",
+        title: "Stratégie digitale",
+        text: "Définition et déploiement from scratch de la stratégie digitale d'Orange Money sur 4 marchés.",
       },
       {
-        title: "SEO",
-        text: "Visibilité des pages Orange Money dans les moteurs de recherche.",
+        title: "Cadrage métier",
+        text: "Recueil des besoins avec le Marketing, l'IT et la Compliance, et conformité réglementaire propre à chaque marché.",
       },
       {
-        title: "Gouvernance",
-        text: "Préparation et suivi des arbitrages en CODIR.",
+        title: "Parcours et acquisition",
+        text: "Conception des parcours digitaux end-to-end (acquisition, virement, recharge), landing pages et pilotage des campagnes SEO par marché.",
+      },
+      {
+        title: "Pilotage et gouvernance",
+        text: "Coordination des opérateurs partenaires et des équipes locales, recette, suivi des KPIs de performance et reporting au CODIR.",
       },
     ],
+    approach: {
+      steps: [
+        {
+          title: "Cadrer marché par marché",
+          text: "Besoins métier, contraintes réglementaires et partenaires opérateurs, pays par pays.",
+        },
+        {
+          title: "Concevoir les parcours",
+          text: "Acquisition, virement et recharge pensés de bout en bout, déclinés pour chaque marché.",
+        },
+        {
+          title: "Déployer",
+          text: "Coordination des équipes locales et des opérateurs jusqu'au lancement.",
+        },
+        {
+          title: "Mesurer et arbitrer",
+          text: "Recette, KPIs de performance et arbitrages en CODIR.",
+        },
+      ],
+    },
     gallery: [
       {
         src: "/img/works/orange-money/app.avif",
@@ -585,6 +670,22 @@ export const caseStudiesFr: CaseStudy[] = [
         frame: "plain",
         caption: "Parcours d'accueil dans l'application",
       },
+    ],
+    impact: {
+      stats: [
+        { value: "4", label: "Marchés lancés en 12 mois" },
+        { value: "+30\u00a0%", label: "Chiffre d'affaires vs N-1" },
+        { value: "26", label: "Pays où le groupe est présent" },
+      ],
+      points: [
+        "Lancement sur 4 marchés à forte croissance en 12 mois.",
+        "+30\u00a0% de chiffre d'affaires par rapport à l'année précédente.",
+        "Une gouvernance outillée\u00a0: recette, KPIs de performance et reporting CODIR.",
+      ],
+    },
+    learnings: [
+      "Un déploiement multi-pays se gagne marché par marché\u00a0: même produit, cadrages différents.",
+      "Impliquer la Compliance dès le cadrage évite de reconstruire les parcours après coup.",
     ],
   },
 ];

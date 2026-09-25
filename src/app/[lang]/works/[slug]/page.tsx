@@ -276,7 +276,7 @@ export default async function CaseStudyPage(
                     </p>
                   )}
                   {study.impact.stats && (
-                    <div className="mb-8 grid gap-4 sm:grid-cols-3">
+                    <div className="mb-8 grid grid-cols-[repeat(auto-fit,minmax(9.5rem,1fr))] gap-4">
                       {study.impact.stats.map((stat) => (
                         <div
                           key={stat.label}
