@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Connexion — Espace client</title>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/assets/espace-client.css?v=30"/>
+<style>
+  body.login-split{min-height:100vh;display:flex;margin:0}
+  .login-split-form{
+    flex:1 1 480px;display:flex;align-items:center;justify-content:center;
+    padding:40px 20px;background:var(--surface);position:relative;z-index:1;
+  }
+  .login-split-form .wrap{padding:0}
+  .login-split-visual{
+    flex:1 1 480px;position:relative;overflow:hidden;background:var(--bg);
+    display:flex;align-items:flex-end;justify-content:center;padding:32px;
+  }
+  .login-split-brand{
+    position:relative;z-index:1;text-align:center;padding:16px 26px;border-radius:14px;
+    background:rgba(255,255,255,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.6);
+  }
+  .login-split-brand-avatar{display:block;width:64px;height:auto;margin:0 auto 10px}
+  .login-split-brand-name{display:block;font-family:var(--serif);font-weight:700;font-size:19px;color:var(--text)}
+  .login-split-brand-sub{display:block;font-size:12.5px;color:var(--text2);margin-top:2px}
+
+  @media(max-width:860px){
+    .login-split-visual{display:none}
+  }
+
+  /* ── Background blobs (identiques à ernestinematjabo.com) ── */
+  .bg-blobs{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .blob{position:absolute;border-radius:50%}
+  .blob-1{
+    width:620px;height:620px;background:radial-gradient(circle,rgba(234,88,12,0.85) 0%,transparent 62%);
+    top:-160px;left:-140px;filter:blur(22px);animation:blobDrift1 12s ease-in-out infinite alternate;
+  }
+  .blob-2{
+    width:520px;height:520px;background:radial-gradient(circle,rgba(194,65,12,0.65) 0%,transparent 62%);
+    bottom:-140px;right:-110px;filter:blur(26px);animation:blobDrift2 9s ease-in-out infinite alternate;
+  }
+  .blob-3{
+    width:420px;height:420px;background:radial-gradient(circle,rgba(249,115,22,0.80) 0%,transparent 62%);
+    top:38%;left:50%;filter:blur(30px);animation:blobDrift3 15s ease-in-out infinite alternate;
+  }
+  .blob-4{
+    width:340px;height:340px;background:radial-gradient(circle,rgba(253,186,116,0.55) 0%,transparent 62%);
+    top:10%;right:8%;filter:blur(28px);animation:blobDrift4 18s ease-in-out infinite alternate;
+  }
+  @keyframes blobDrift1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(150px,110px) scale(1.28)}}
+  @keyframes blobDrift2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-130px,-140px) scale(1.22)}}
+  @keyframes blobDrift3{0%{transform:translate(-50%,-50%) scale(1) rotate(0deg)}100%{transform:translate(-18%,-68%) scale(1.32) rotate(28deg)}}
+  @keyframes blobDrift4{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-60px,90px) scale(1.18)}}
+</style>
+</head>
+<body class="login-split">
+<div class="login-split-form">
+  <div class="wrap">
+    <h1 style="font-family:var(--serif);font-weight:800;font-size:28px">Espace client</h1>
+    <p class="sub">Connectez-vous pour suivre votre projet.</p>
+
+    <div id="msg-box"></div>
+
+    <!-- Étape 1 : email -->
+    <form id="login-form" class="card">
+      <label for="email">Email</label>
+      <input type="email" id="email" required autocomplete="email"/>
+      <button type="submit" class="btn-primary" id="login-btn">Recevoir mon code</button>
+    </form>
+
+    <!-- Étape 2 : code de connexion reçu par email -->
+    <form id="code-step-form" class="card hidden">
+      <p class="sub" style="margin-bottom:16px" id="code-step-sub"></p>
+      <label for="login-code">Code de connexion</label>
+      <input type="text" id="login-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required/>
+      <button type="submit" class="btn-primary" id="code-step-btn">Se connecter</button>
+      <button type="button" class="btn-secondary" id="code-step-back" style="width:100%;margin-top:10px">Changer d'email</button>
+    </form>
+
+    <!-- Bootstrap admin : lien d'invitation Supabase, usage unique -->
+    <form id="admin-invite-form" class="card hidden">
+      <p class="sub" style="margin-bottom:16px">Compte admin confirmé — définissez votre mot de passe.</p>
+      <label for="admin-pass">Mot de passe</label>
+      <input type="password" id="admin-pass" required minlength="8" autocomplete="new-password"/>
+      <button type="submit" class="btn-primary" id="admin-pass-btn">Définir mon mot de passe admin</button>
+    </form>
+  </div>
+</div>
+<div class="login-split-visual" aria-hidden="true">
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+  <div class="login-split-brand">
+    <img src="/assets/img/memoji-ernestine.png" alt="" class="login-split-brand-avatar"/>
+    <span class="login-split-brand-name">Ernestine Matjabo</span>
+    <span class="login-split-brand-sub">Espace client</span>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, callFunction } from '/assets/supabase-client.js';
+
+const msgBox = document.getElementById('msg-box');
+function showMsg(text, type = 'error') {
+  msgBox.innerHTML = `<div class="msg ${type}">${text}</div>`;
+}
+function clearMsg() { msgBox.innerHTML = ''; }
+
+const loginForm = document.getElementById('login-form');
+const codeStepForm = document.getElementById('code-step-form');
+const codeStepSub = document.getElementById('code-step-sub');
+let pendingEmail = '';
+
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearMsg();
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  pendingEmail = document.getElementById('email').value.trim();
+
+  try {
+    await callFunction('request-login-code', { email: pendingEmail });
+  } catch (err) {
+    btn.disabled = false;
+    showMsg(err.message || 'Une erreur est survenue.');
+    return;
+  }
+
+  btn.disabled = false;
+  codeStepSub.textContent = `Un code à 6 chiffres a été envoyé à ${pendingEmail}.`;
+  loginForm.classList.add('hidden');
+  codeStepForm.classList.remove('hidden');
+  document.getElementById('login-code').focus();
+});
+
+codeStepForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearMsg();
+  const btn = document.getElementById('code-step-btn');
+  btn.disabled = true;
+  const code = document.getElementById('login-code').value.trim();
+
+  let token_hash;
+  try {
+    ({ token_hash } = await callFunction('verify-login-code', { email: pendingEmail, code }));
+  } catch (err) {
+    btn.disabled = false;
+    showMsg(err.message || 'Code invalide ou expiré.');
+    return;
+  }
+
+  const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'magiclink' });
+  if (error) {
+    btn.disabled = false;
+    showMsg("Ce code n'a pas pu être vérifié, réessayez.");
+    return;
+  }
+  window.location.href = '/espace-client/';
+});
+
+document.getElementById('code-step-back').addEventListener('click', () => {
+  clearMsg();
+  codeStepForm.classList.add('hidden');
+  loginForm.classList.remove('hidden');
+  document.getElementById('login-code').value = '';
+});
+
+const ADMIN_EMAIL = 'ernestinemtb@gmail.com';
+
+if (location.hash.includes('type=invite') || location.hash.includes('type=recovery')) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session && session.user.email === ADMIN_EMAIL) {
+    loginForm.classList.add('hidden');
+    document.getElementById('admin-invite-form').classList.remove('hidden');
+  }
+} else {
+  // Si déjà connectée et onboardée, redirection directe.
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user?.email === ADMIN_EMAIL) {
+    window.location.href = '/admin/';
+  } else if (session) {
+    window.location.href = '/espace-client/';
+  }
+}
+
+document.getElementById('admin-invite-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('admin-pass-btn');
+  btn.disabled = true;
+  const { error } = await supabase.auth.updateUser({ password: document.getElementById('admin-pass').value });
+  btn.disabled = false;
+  if (error) {
+    showMsg(error.message);
+    return;
+  }
+  window.location.href = '/admin/';
+});
+</script>
+</body>
+</html>

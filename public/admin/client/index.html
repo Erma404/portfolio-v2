@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Fiche client — Admin</title>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/assets/espace-client.css?v=30"/>
+</head>
+<body>
+<div class="app-shell">
+  <div class="overlay" id="overlay"></div>
+  <aside class="app-sidebar" id="sidebar">
+    <div class="app-brand">
+      <div class="avatar" style="background:var(--text)">EM</div>
+      <div class="app-brand-text">
+        <div class="app-brand-name">Ernestine Matjabo</div>
+        <div class="app-brand-sub">Admin — Espace client</div>
+      </div>
+    </div>
+    <nav class="app-nav">
+      <a href="/admin/" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Clients
+      </a>
+      <a href="/admin/workspace/" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
+        Workspace
+      </a>
+    </nav>
+    <div class="app-sidebar-bottom">
+      <a href="#" class="nav-item" id="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Déconnexion
+      </a>
+    </div>
+  </aside>
+
+  <div class="app-main">
+    <div class="app-topbar">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/></svg>
+      </button>
+      <strong style="font-size:14px">Fiche client</strong>
+    </div>
+    <div class="app-content">
+      <div class="app-content-inner" id="content">
+        <p class="sub">Chargement…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="phase-modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="phase-modal-close" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <div class="modal-header" id="phase-modal-header"></div>
+    <div class="modal-body" id="phase-modal-body"></div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, requireAdminSession, callFunction } from '/assets/supabase-client.js';
+
+const ICON_IMAGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m21 15-5-5L5 20"/></svg>';
+const ICON_DOC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>';
+const ICON_DOWNLOAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>';
+const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+const ICON_LINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>';
+const IMAGE_EXT = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+const TAG_OPTIONS = [
+  { name: 'Kick-off', bg: 'rgba(37,99,235,0.14)', color: '#2563eb' },
+  { name: 'UX', bg: 'rgba(91,76,245,0.12)', color: '#5b4cf5' },
+  { name: 'Design', bg: 'rgba(217,70,239,0.13)', color: '#a21caf' },
+  { name: 'Dev', bg: 'rgba(48,164,108,0.16)', color: '#1f8a57' },
+  { name: 'Contenu', bg: 'rgba(20,184,166,0.16)', color: '#0f766e' },
+  { name: 'SEO', bg: 'rgba(6,182,212,0.15)', color: '#0e7490' },
+  { name: 'Report', bg: 'rgba(217,164,65,0.18)', color: '#9a6b0a' },
+  { name: 'Urgent', bg: 'rgba(229,72,77,0.13)', color: '#c53d41' },
+];
+function tagStyle(tag) {
+  return TAG_OPTIONS.find((t) => t.name === tag) || { bg: 'var(--chip-bg)', color: 'var(--text2)' };
+}
+function renderTags(tags) {
+  return (tags || []).length
+    ? `<div class="kanban-tags">${tags.map((t) => `<span class="kanban-tag" style="background:${tagStyle(t).bg};color:${tagStyle(t).color}">${t}</span>`).join('')}</div>`
+    : '';
+}
+const PHASE_COLUMNS = [
+  { statut: 'a_venir', label: 'À venir' },
+  { statut: 'en_cours', label: 'En cours' },
+  { statut: 'terminee', label: 'Terminé' },
+];
+function fileIcon(nom) {
+  const ext = (nom.split('.').pop() || '').toLowerCase();
+  return IMAGE_EXT.includes(ext) ? ICON_IMAGE : ICON_DOC;
+}
+function initials(nom) {
+  return nom.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+}
+function formatBytes(bytes) {
+  if (!bytes) return '';
+  const kb = bytes / 1024;
+  return kb < 1024 ? `${Math.round(kb)} Ko` : `${(kb / 1024).toFixed(1)} Mo`;
+}
+function money(n) {
+  return Number(n).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function renderInline(text) {
+  return escapeHtml(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+// Rendu "markdown-lite" des comptes-rendus : titres (#, ##, ###), listes (-, *, •,
+// avec indentation pour l'imbrication) et gras (**texte**), sinon simples paragraphes
+// avec sauts de ligne préservés.
+function renderNoteContent(raw) {
+  const lines = raw.split('\n');
+  let html = '';
+  let listDepth = 0;
+  let paragraph = [];
+  const flushParagraph = () => {
+    if (paragraph.length) { html += `<p>${paragraph.join('<br>')}</p>`; paragraph = []; }
+  };
+  const closeLists = () => { while (listDepth > 0) { html += '</ul>'; listDepth--; } };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (trimmed === '') { flushParagraph(); closeLists(); return; }
+
+    const heading = trimmed.match(/^(#{1,3})\s+(.*)$/);
+    if (heading) {
+      flushParagraph(); closeLists();
+      const level = heading[1].length + 2;
+      html += `<h${level}>${renderInline(heading[2])}</h${level}>`;
+      return;
+    }
+
+    const bullet = line.match(/^(\s*)[-*•]\s+(.*)$/);
+    if (bullet) {
+      flushParagraph();
+      const depth = Math.min(Math.floor(bullet[1].length / 2) + 1, 4);
+      while (listDepth < depth) { html += '<ul>'; listDepth++; }
+      while (listDepth > depth) { html += '</ul>'; listDepth--; }
+      html += `<li>${renderInline(bullet[2])}</li>`;
+      return;
+    }
+
+    closeLists();
+    paragraph.push(renderInline(trimmed));
+  });
+  flushParagraph();
+  closeLists();
+  return html;
+}
+async function downloadPath(path, btn) {
+  btn.disabled = true;
+  const { data, error } = await supabase.storage.from('client-files').createSignedUrl(path, 60);
+  btn.disabled = false;
+  if (error || !data) { showToast('Impossible de générer le lien de téléchargement.'); return; }
+  window.open(data.signedUrl, '_blank');
+}
+
+// Confirmation de suppression sans dialogue natif (window.confirm bloque tout
+// le rendu de la page) : premier clic arme le bouton (rouge, 3s), second clic confirme.
+function wireDeleteConfirm(btn, onConfirm) {
+  let timeout;
+  btn.addEventListener('click', () => {
+    if (btn.dataset.armed !== 'true') {
+      btn.dataset.armed = 'true';
+      btn.classList.add('confirm-armed');
+      timeout = setTimeout(() => {
+        btn.dataset.armed = 'false';
+        btn.classList.remove('confirm-armed');
+      }, 3000);
+      return;
+    }
+    clearTimeout(timeout);
+    btn.disabled = true;
+    onConfirm();
+  });
+}
+
+// Remplace window.alert (bloquant) par un message non bloquant en bas d'écran.
+function showToast(message, type = 'error') {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.className = `toast ${type} show`;
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+const session = await requireAdminSession();
+if (session) {
+  const params = new URLSearchParams(location.search);
+  const clientId = params.get('id');
+  const content = document.getElementById('content');
+  document.body.classList.add('hide-sidebar');
+  let docsTab = 'fichiers';
+
+  if (!clientId) {
+    content.innerHTML = '<div class="msg error">Client introuvable.</div>';
+  } else {
+    await render();
+  }
+
+  async function render() {
+    const { data: client } = await supabase.from('clients').select('*').eq('id', clientId).single();
+    const { data: project } = await supabase.from('projects').select('*').eq('client_id', clientId).single();
+    const { data: phases } = project
+      ? await supabase.from('project_phases').select('*').eq('project_id', project.id).order('ordre')
+      : { data: [] };
+    const phaseIds = (phases || []).map((p) => p.id);
+    const { data: phaseTaskCounts } = phaseIds.length
+      ? await supabase.from('project_tasks').select('phase_id, fait').in('phase_id', phaseIds)
+      : { data: [] };
+    const taskStats = {};
+    (phaseTaskCounts || []).forEach((t) => {
+      taskStats[t.phase_id] = taskStats[t.phase_id] || { total: 0, done: 0 };
+      taskStats[t.phase_id].total++;
+      if (t.fait) taskStats[t.phase_id].done++;
+    });
+    const { data: files } = project
+      ? await supabase.from('files').select('*').eq('project_id', project.id).is('phase_id', null).order('date_upload', { ascending: false })
+      : { data: [] };
+    const { data: quotes } = project
+      ? await supabase.from('quotes').select('*').eq('project_id', project.id).order('created_at', { ascending: false })
+      : { data: [] };
+    const { data: invoices } = project
+      ? await supabase.from('invoices').select('*').eq('project_id', project.id).order('created_at', { ascending: false })
+      : { data: [] };
+
+    content.innerHTML = `
+      <div class="compact-view">
+      <p class="sub" style="margin-bottom:16px;display:flex;gap:14px;align-items:center">
+        <a href="/admin/">← Clients</a>
+        <span style="margin-left:auto;display:flex;gap:14px">
+          <a href="/admin/workspace/">Workspace</a>
+          <a href="#" id="fiche-logout-inline">Déconnexion</a>
+        </span>
+      </p>
+      <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="avatar" style="width:44px;height:44px;font-size:15px;background:var(--accent)">${initials(client.nom)}</div>
+          <div>
+            <h1 style="margin:0">${client.nom}</h1>
+            <p class="sub" style="margin:2px 0 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              ${client.email} · ${client.nom_projet} ·
+              <select class="badge ${client.statut}" id="client-statut">
+                <option value="onboarding" ${client.statut === 'onboarding' ? 'selected' : ''}>onboarding</option>
+                <option value="actif" ${client.statut === 'actif' ? 'selected' : ''}>actif</option>
+                <option value="archive" ${client.statut === 'archive' ? 'selected' : ''}>archivé</option>
+              </select>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><h2>Phases</h2></div>
+        <div class="kanban-board" id="phases-board">
+          ${PHASE_COLUMNS.map((col) => {
+            const colPhases = (phases || []).filter((p) => p.statut === col.statut);
+            return `
+            <div class="kanban-column" data-statut="${col.statut}">
+              <div class="kanban-column-head">
+                <span class="kanban-column-dot ${col.statut}"></span>
+                <span class="kanban-column-title">${col.label}</span>
+                <span class="kanban-column-count">${colPhases.length}</span>
+              </div>
+              <div class="kanban-cards" data-statut="${col.statut}">
+                ${colPhases.map((p) => {
+                  const stats = taskStats[p.id];
+                  const pct = stats && stats.total ? Math.round((stats.done / stats.total) * 100) : null;
+                  return `
+                  <div class="kanban-card" draggable="true" data-phase-id="${p.id}">
+                    ${renderTags(p.tags)}
+                    <div class="kanban-card-title">${p.nom_phase}</div>
+                    ${pct !== null ? `
+                    <div class="kanban-progress-row">
+                      <div class="progress"><div class="progress-bar ${pct === 100 ? 'success' : ''}" style="width:${pct}%"></div></div>
+                      <span class="kanban-progress-label">${stats.done}/${stats.total}</span>
+                    </div>` : ''}
+                    <div class="kanban-card-foot">
+                      <span class="kanban-card-date">${new Date(p.date_maj).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                  </div>
+                `;
+                }).join('')}
+              </div>
+            </div>
+            `;
+          }).join('')}
+        </div>
+        <form id="add-phase-form" style="margin-top:16px;display:flex;gap:8px;align-items:flex-end">
+          <div style="flex:1"><label for="nom_phase">Nouvelle phase</label><input type="text" id="nom_phase" required style="margin:0"/></div>
+          <button type="submit" class="btn-secondary">Ajouter</button>
+        </form>
+      </div>
+
+      <div class="section-card">
+        <div class="filter-tabs" id="docs-tabs">
+          <button type="button" class="filter-tab ${docsTab === 'fichiers' ? 'active' : ''}" data-tab="fichiers">Fichiers</button>
+          <button type="button" class="filter-tab ${docsTab === 'devis' ? 'active' : ''}" data-tab="devis">Devis</button>
+          <button type="button" class="filter-tab ${docsTab === 'factures' ? 'active' : ''}" data-tab="factures">Factures</button>
+        </div>
+
+        ${docsTab === 'fichiers' ? `
+        <div class="file-list" id="files-list">
+          ${(files || []).map((f) => `
+            <div class="file-item">
+              <div class="file-icon">${fileIcon(f.nom)}</div>
+              <div class="file-info">
+                <div class="file-name">${f.nom}</div>
+                <div class="file-meta">${f.type}${f.size_bytes ? ' · ' + formatBytes(f.size_bytes) : ''} · ${new Date(f.date_upload).toLocaleDateString('fr-FR')}</div>
+              </div>
+              <div class="file-actions">
+                <button class="file-download" data-path="${f.storage_path}" title="Télécharger">${ICON_DOWNLOAD}</button>
+                <button class="file-download file-delete" data-file-id="${f.id}" data-path="${f.storage_path}" title="Supprimer">${ICON_TRASH}</button>
+              </div>
+            </div>
+          `).join('') || '<p class="sub" style="margin:0">Aucun fichier.</p>'}
+        </div>
+        <form id="upload-form" style="margin-top:16px">
+          <label for="file-input">Ajouter un fichier</label>
+          <input type="file" id="file-input" required style="margin-bottom:16px"/>
+          <button type="submit" class="btn-primary" id="upload-btn" style="width:auto">Uploader et notifier le client</button>
+        </form>
+        ` : ''}
+
+        ${docsTab === 'devis' ? `
+        <div id="quotes-list">
+          ${(quotes || []).map((q) => `
+            <div class="doc-item">
+              <div class="file-icon">${ICON_DOC}</div>
+              <div class="file-info">
+                <div class="doc-amount">${money(q.montant)}</div>
+                <div class="doc-meta">${new Date(q.created_at).toLocaleDateString('fr-FR')}</div>
+              </div>
+              <select class="badge ${q.statut}" data-quote-id="${q.id}">
+                <option value="envoye" ${q.statut === 'envoye' ? 'selected' : ''}>envoyé</option>
+                <option value="accepte" ${q.statut === 'accepte' ? 'selected' : ''}>accepté</option>
+                <option value="refuse" ${q.statut === 'refuse' ? 'selected' : ''}>refusé</option>
+              </select>
+              <button class="file-download" data-path="${q.storage_path}" title="Télécharger">${ICON_DOWNLOAD}</button>
+            </div>
+          `).join('') || '<p class="sub" style="margin:0">Aucun devis.</p>'}
+        </div>
+        <form id="quote-form" style="margin-top:16px;display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+          <div><label for="quote-montant">Montant (€)</label><input type="text" inputmode="decimal" id="quote-montant" required style="margin:0;width:120px"/></div>
+          <div style="flex:1;min-width:180px"><label for="quote-file">Fichier PDF</label><input type="file" id="quote-file" accept="application/pdf" required style="margin:0"/></div>
+          <button type="submit" class="btn-primary" style="width:auto">Envoyer le devis</button>
+        </form>
+        ` : ''}
+
+        ${docsTab === 'factures' ? `
+        <div id="invoices-list">
+          ${(invoices || []).map((inv) => `
+            <div class="doc-item">
+              <div class="file-icon">${ICON_DOC}</div>
+              <div class="file-info">
+                <div class="doc-amount">${money(inv.montant)}</div>
+                <div class="doc-meta">${new Date(inv.created_at).toLocaleDateString('fr-FR')}</div>
+              </div>
+              <select class="badge ${inv.statut}" data-invoice-id="${inv.id}">
+                <option value="envoyee" ${inv.statut === 'envoyee' ? 'selected' : ''}>envoyée</option>
+                <option value="payee" ${inv.statut === 'payee' ? 'selected' : ''}>payée</option>
+              </select>
+              <button class="file-download" data-path="${inv.storage_path}" title="Télécharger">${ICON_DOWNLOAD}</button>
+            </div>
+          `).join('') || '<p class="sub" style="margin:0">Aucune facture.</p>'}
+        </div>
+        <form id="invoice-form" style="margin-top:16px;display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+          <div><label for="invoice-montant">Montant (€)</label><input type="text" inputmode="decimal" id="invoice-montant" required style="margin:0;width:120px"/></div>
+          <div style="flex:1;min-width:180px"><label for="invoice-file">Fichier PDF</label><input type="file" id="invoice-file" accept="application/pdf" required style="margin:0"/></div>
+          <button type="submit" class="btn-primary" style="width:auto">Envoyer la facture</button>
+        </form>
+        ` : ''}
+      </div>
+      </div>
+    `;
+
+    document.getElementById('client-statut').addEventListener('change', async (e) => {
+      const sel = e.target;
+      sel.disabled = true;
+      await supabase.from('clients').update({ statut: sel.value }).eq('id', clientId);
+      sel.classList.remove('onboarding', 'actif', 'archive');
+      sel.classList.add(sel.value);
+      sel.disabled = false;
+    });
+
+    document.getElementById('fiche-logout-inline').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await supabase.auth.signOut();
+      window.location.href = '/admin/';
+    });
+
+    document.querySelectorAll('#docs-tabs .filter-tab').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        docsTab = btn.dataset.tab;
+        render();
+      });
+    });
+
+    // ── Phases : kanban drag-and-drop (statut + réordonnancement) ──────────
+    async function changeStatut(phaseId, statut) {
+      const p = phases.find((ph) => ph.id === phaseId);
+      await supabase.from('project_phases').update({ statut, date_maj: new Date().toISOString() }).eq('id', phaseId);
+      if (statut === 'en_cours') {
+        await supabase.from('projects').update({ phase_actuelle: p.nom_phase }).eq('id', project.id);
+      }
+      try {
+        await callFunction('notify-update', { client_id: clientId, type: 'phase_update', nom_phase: p.nom_phase, statut });
+      } catch {}
+    }
+
+    let draggedPhaseId = null;
+
+    async function handleCardDrop(targetCardId, targetStatut) {
+      if (!draggedPhaseId) return;
+      const dragged = phases.find((p) => p.id === draggedPhaseId);
+      const oldStatut = dragged.statut;
+      const ids = phases.map((p) => p.id);
+      const fromIdx = ids.indexOf(draggedPhaseId);
+      ids.splice(fromIdx, 1);
+
+      let insertIdx;
+      if (targetCardId && targetCardId !== draggedPhaseId) {
+        insertIdx = ids.indexOf(targetCardId);
+      } else {
+        const remaining = phases.filter((p) => p.id !== draggedPhaseId);
+        let lastIdxOfCol = -1;
+        remaining.forEach((p, idx) => { if (p.statut === targetStatut) lastIdxOfCol = idx; });
+        insertIdx = lastIdxOfCol + 1;
+      }
+      ids.splice(insertIdx, 0, draggedPhaseId);
+      draggedPhaseId = null;
+
+      await Promise.all(ids.map((id, idx) => supabase.from('project_phases').update({ ordre: idx + 1 }).eq('id', id)));
+      if (oldStatut !== targetStatut) await changeStatut(dragged.id, targetStatut);
+      await render();
+    }
+
+    content.querySelectorAll('.kanban-card[data-phase-id]').forEach((card) => {
+      card.addEventListener('dragstart', (e) => {
+        draggedPhaseId = card.dataset.phaseId;
+        e.dataTransfer.effectAllowed = 'move';
+        card.classList.add('dragging');
+      });
+      card.addEventListener('dragend', () => {
+        content.querySelectorAll('.kanban-card, .kanban-cards').forEach((el) => el.classList.remove('dragging', 'drag-over'));
+      });
+      card.addEventListener('dragover', (e) => {
+        if (!draggedPhaseId || draggedPhaseId === card.dataset.phaseId) return;
+        e.preventDefault();
+        e.stopPropagation();
+        card.classList.add('drag-over');
+      });
+      card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+      card.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        card.classList.remove('drag-over');
+        await handleCardDrop(card.dataset.phaseId, card.closest('.kanban-column').dataset.statut);
+      });
+    });
+
+    content.querySelectorAll('.kanban-cards').forEach((col) => {
+      col.addEventListener('dragover', (e) => {
+        if (!draggedPhaseId) return;
+        e.preventDefault();
+        col.classList.add('drag-over');
+      });
+      col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+      col.addEventListener('drop', async (e) => {
+        if (e.target !== col) return;
+        e.preventDefault();
+        col.classList.remove('drag-over');
+        await handleCardDrop(null, col.dataset.statut);
+      });
+    });
+
+    async function renderPhaseDetail(phaseId) {
+      const box = document.getElementById('phase-modal-body');
+      box.innerHTML = '<p class="sub" style="margin:0">Chargement…</p>';
+
+      const [{ data: notes }, { data: phaseFiles }, { data: tasks }, { data: phaseLinks }] = await Promise.all([
+        supabase.from('project_phase_notes').select('id, contenu, created_at').eq('phase_id', phaseId).order('created_at', { ascending: false }),
+        supabase.from('files').select('id, nom, type, storage_path, date_upload, size_bytes').eq('phase_id', phaseId).order('date_upload', { ascending: false }),
+        supabase.from('project_tasks').select('id, titre, responsable, delai, fait').eq('phase_id', phaseId).order('created_at', { ascending: true }),
+        supabase.from('phase_links').select('id, titre, url, created_at').eq('phase_id', phaseId).order('created_at', { ascending: false }),
+      ]);
+
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPhase = phases.find((p) => p.id === phaseId);
+
+      box.innerHTML = `
+        <div class="phase-detail-section">
+          <div class="phase-detail-label">Tags</div>
+          <div class="tag-picker">
+            ${TAG_OPTIONS.map((t) => `
+              <button type="button" class="tag-toggle ${(currentPhase.tags || []).includes(t.name) ? 'active' : ''}" data-tag="${t.name}" style="--tag-bg:${t.bg};--tag-color:${t.color}">${t.name}</button>
+            `).join('')}
+          </div>
+        </div>
+        <div class="phase-detail-section">
+          <div class="phase-detail-label">Tâches</div>
+          <div class="task-list" id="tasks-${phaseId}">
+            ${(tasks || []).length === 0 ? '<p class="sub" style="margin:0;font-size:13px">Aucune tâche pour l\'instant.</p>' : (tasks || []).map((t) => `
+              <div class="task-item">
+                <input type="checkbox" class="task-check" data-task-id="${t.id}" ${t.fait ? 'checked' : ''}/>
+                <div class="task-info">
+                  <div class="task-title ${t.fait ? 'done' : ''}">${t.titre}</div>
+                  <div class="task-meta ${!t.fait && t.delai && t.delai < today ? 'overdue' : ''}">${[t.responsable, t.delai ? `échéance ${new Date(t.delai).toLocaleDateString('fr-FR')}` : null].filter(Boolean).join(' · ')}</div>
+                </div>
+                <button class="file-download file-delete" data-task-id="${t.id}" title="Supprimer">${ICON_TRASH}</button>
+              </div>
+            `).join('')}
+          </div>
+          <form class="task-form" data-phase-id="${phaseId}" style="margin-top:12px;display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+            <div style="flex:1;min-width:160px"><label>Titre</label><input type="text" class="task-titre" style="margin:0"/></div>
+            <div style="width:140px"><label>Responsable</label><input type="text" class="task-responsable" style="margin:0"/></div>
+            <div style="width:150px"><label>Délai</label><input type="date" class="task-delai" style="margin:0"/></div>
+            <button type="submit" class="btn-secondary">Ajouter</button>
+          </form>
+        </div>
+        <div class="phase-detail-section">
+          <div class="phase-detail-label">Comptes-rendus</div>
+          <div id="notes-${phaseId}">
+            ${(notes || []).length === 0 ? '<p class="sub" style="margin:0;font-size:13px">Aucune note pour l\'instant.</p>' : (notes || []).map((n) => `
+              <div class="note-item">
+                <div class="note-item-head">
+                  <div class="note-content">${renderNoteContent(n.contenu)}</div>
+                  <div class="file-actions">
+                    <button class="file-download note-edit" data-note-id="${n.id}" title="Modifier">${ICON_EDIT}</button>
+                    <button class="file-download file-delete" data-note-id="${n.id}" title="Supprimer">${ICON_TRASH}</button>
+                  </div>
+                </div>
+                <div class="meta">${new Date(n.created_at).toLocaleDateString('fr-FR')}</div>
+              </div>
+            `).join('')}
+          </div>
+          <form class="note-form" data-phase-id="${phaseId}" data-editing-id="">
+            <label class="note-form-label">Ajouter un compte-rendu</label>
+            <textarea class="note-textarea" rows="6" placeholder="Collez ou rédigez votre compte-rendu ici… (astuce : # Titre, - liste, **gras**)"></textarea>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button type="submit" class="btn-secondary note-submit">Ajouter</button>
+              <button type="button" class="btn-secondary note-cancel" style="display:none">Annuler</button>
+            </div>
+          </form>
+        </div>
+        <div class="phase-detail-section">
+          <div class="phase-detail-label">Fichiers de cette phase</div>
+          <div class="file-list">
+            ${(phaseFiles || []).length === 0 ? '<p class="sub" style="margin:0;font-size:13px">Aucun fichier.</p>' : (phaseFiles || []).map((f) => `
+              <div class="file-item">
+                <div class="file-icon">${fileIcon(f.nom)}</div>
+                <div class="file-info">
+                  <div class="file-name">${f.nom}</div>
+                  <div class="file-meta">${formatBytes(f.size_bytes)}${f.size_bytes ? ' · ' : ''}${new Date(f.date_upload).toLocaleDateString('fr-FR')}</div>
+                </div>
+                <div class="file-actions">
+                  <button class="file-download" data-path="${f.storage_path}" title="Télécharger">${ICON_DOWNLOAD}</button>
+                  <button class="file-download file-delete" data-file-id="${f.id}" data-path="${f.storage_path}" title="Supprimer">${ICON_TRASH}</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <form class="phase-upload-form" data-phase-id="${phaseId}" style="margin-top:12px">
+            <input type="file" style="margin-bottom:10px"/>
+            <button type="submit" class="btn-secondary">Ajouter un fichier</button>
+          </form>
+        </div>
+        <div class="phase-detail-section">
+          <div class="phase-detail-label">Liens</div>
+          <div class="file-list">
+            ${(phaseLinks || []).length === 0 ? '<p class="sub" style="margin:0;font-size:13px">Aucun lien.</p>' : (phaseLinks || []).map((l) => `
+              <div class="file-item">
+                <div class="file-icon">${ICON_LINK}</div>
+                <div class="file-info">
+                  <div class="file-name">${l.titre}</div>
+                  <div class="file-meta">${new Date(l.created_at).toLocaleDateString('fr-FR')}</div>
+                </div>
+                <div class="file-actions">
+                  <a class="file-download" href="${l.url}" target="_blank" rel="noopener" title="Ouvrir">${ICON_LINK}</a>
+                  <button class="file-download file-delete" data-link-id="${l.id}" title="Supprimer">${ICON_TRASH}</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <form class="phase-link-form" data-phase-id="${phaseId}" style="margin-top:12px;display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+            <div style="flex:1;min-width:160px"><label>Titre</label><input type="text" class="link-titre" style="margin:0" placeholder="Preprod ENERG-FLUIDE"/></div>
+            <div style="flex:2;min-width:220px"><label>URL</label><input type="url" class="link-url" style="margin:0" placeholder="https://..."/></div>
+            <button type="submit" class="btn-secondary">Partager</button>
+          </form>
+        </div>
+      `;
+
+      box.querySelectorAll('.file-download[data-path]:not(.file-delete)').forEach((btn) => {
+        btn.addEventListener('click', () => downloadPath(btn.dataset.path, btn));
+      });
+      box.querySelectorAll('.file-delete[data-path]').forEach((btn) => {
+        wireDeleteConfirm(btn, async () => {
+          await supabase.storage.from('client-files').remove([btn.dataset.path]);
+          await supabase.from('files').delete().eq('id', btn.dataset.fileId);
+          renderPhaseDetail(phaseId);
+        });
+      });
+      box.querySelectorAll('.file-delete[data-link-id]').forEach((btn) => {
+        wireDeleteConfirm(btn, async () => {
+          await supabase.from('phase_links').delete().eq('id', btn.dataset.linkId);
+          renderPhaseDetail(phaseId);
+        });
+      });
+      box.querySelector('.phase-link-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const titre = form.querySelector('.link-titre').value.trim();
+        const url = form.querySelector('.link-url').value.trim();
+        if (!titre || !url) { showToast('Indiquez un titre et une URL avant de partager.'); return; }
+        await supabase.from('phase_links').insert({ project_id: project.id, phase_id: phaseId, titre, url });
+        await callFunction('notify-update', { client_id: clientId, type: 'new_link', titre_lien: titre, nom_phase: currentPhase.nom_phase });
+        renderPhaseDetail(phaseId);
+      });
+      box.querySelectorAll('.task-check').forEach((cb) => {
+        cb.addEventListener('change', async () => {
+          cb.disabled = true;
+          await supabase.from('project_tasks').update({ fait: cb.checked }).eq('id', cb.dataset.taskId);
+          await render();
+          renderPhaseDetail(phaseId);
+        });
+      });
+      box.querySelectorAll('.task-item .file-delete[data-task-id]').forEach((btn) => {
+        wireDeleteConfirm(btn, async () => {
+          await supabase.from('project_tasks').delete().eq('id', btn.dataset.taskId);
+          await render();
+          renderPhaseDetail(phaseId);
+        });
+      });
+      box.querySelector('.task-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const titre = form.querySelector('.task-titre').value.trim();
+        const responsable = form.querySelector('.task-responsable').value.trim();
+        const delai = form.querySelector('.task-delai').value;
+        if (!titre) { showToast('Indiquez un titre avant d\'ajouter.'); return; }
+        await supabase.from('project_tasks').insert({
+          phase_id: phaseId, titre, responsable: responsable || null, delai: delai || null,
+        });
+        await render();
+        renderPhaseDetail(phaseId);
+      });
+      const noteForm = box.querySelector('.note-form');
+      const noteTextarea = noteForm.querySelector('.note-textarea');
+      const noteSubmitBtn = noteForm.querySelector('.note-submit');
+      const noteCancelBtn = noteForm.querySelector('.note-cancel');
+      const noteFormLabel = noteForm.querySelector('.note-form-label');
+      const exitNoteEditMode = () => {
+        noteForm.dataset.editingId = '';
+        noteTextarea.value = '';
+        noteSubmitBtn.textContent = 'Ajouter';
+        noteFormLabel.textContent = 'Ajouter un compte-rendu';
+        noteCancelBtn.style.display = 'none';
+      };
+      box.querySelectorAll('.note-edit').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const note = (notes || []).find((n) => n.id === btn.dataset.noteId);
+          if (!note) return;
+          noteForm.dataset.editingId = note.id;
+          noteTextarea.value = note.contenu;
+          noteSubmitBtn.textContent = 'Enregistrer';
+          noteFormLabel.textContent = 'Modifier le compte-rendu';
+          noteCancelBtn.style.display = '';
+          noteTextarea.focus();
+          noteTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      });
+      noteCancelBtn.addEventListener('click', exitNoteEditMode);
+      box.querySelectorAll('.note-item .file-delete[data-note-id]').forEach((btn) => {
+        wireDeleteConfirm(btn, async () => {
+          await supabase.from('project_phase_notes').delete().eq('id', btn.dataset.noteId);
+          renderPhaseDetail(phaseId);
+        });
+      });
+      noteForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const contenu = noteTextarea.value.trim();
+        if (!contenu) { showToast('Écrivez une note avant d\'ajouter.'); return; }
+        const editingId = noteForm.dataset.editingId;
+        if (editingId) {
+          await supabase.from('project_phase_notes').update({ contenu }).eq('id', editingId);
+        } else {
+          await supabase.from('project_phase_notes').insert({ phase_id: phaseId, contenu });
+          await callFunction('notify-update', { client_id: clientId, type: 'new_note', nom_phase: currentPhase.nom_phase });
+        }
+        renderPhaseDetail(phaseId);
+      });
+      box.querySelector('.phase-upload-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = e.target.querySelector('input[type=file]');
+        const file = fileInput.files[0];
+        if (!file) { showToast('Sélectionnez un fichier avant d\'ajouter.'); return; }
+        const path = `${project.id}/${Date.now()}_${file.name}`;
+        const { error: uploadError } = await supabase.storage.from('client-files').upload(path, file);
+        if (uploadError) { showToast(uploadError.message); return; }
+        await supabase.from('files').insert({
+          project_id: project.id, phase_id: phaseId, type: 'fichier', nom: file.name,
+          storage_path: path, size_bytes: file.size,
+        });
+        renderPhaseDetail(phaseId);
+      });
+      box.querySelectorAll('.tag-toggle').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const tagName = btn.dataset.tag;
+          const current = currentPhase.tags || [];
+          const tags = current.includes(tagName) ? current.filter((t) => t !== tagName) : [...current, tagName];
+          btn.classList.toggle('active');
+          currentPhase.tags = tags;
+          await supabase.from('project_phases').update({ tags }).eq('id', phaseId);
+        });
+      });
+    }
+
+    const phaseModalOverlay = document.getElementById('phase-modal-overlay');
+    const phaseModalHeader = document.getElementById('phase-modal-header');
+    function closePhaseModal() { phaseModalOverlay.classList.remove('open'); }
+    document.getElementById('phase-modal-close').addEventListener('click', closePhaseModal);
+    phaseModalOverlay.addEventListener('click', (e) => { if (e.target === phaseModalOverlay) closePhaseModal(); });
+
+    content.querySelectorAll('.kanban-card[data-phase-id]').forEach((card) => {
+      card.addEventListener('click', () => {
+        const phaseId = card.dataset.phaseId;
+        const p = phases.find((ph) => ph.id === phaseId);
+        phaseModalHeader.innerHTML = `
+          <h2>${p.nom_phase}</h2>
+          <div class="meta-row">
+            <span class="badge ${p.statut}">${p.statut.replace('_', ' ')}</span>
+            <span class="timeline-meta" style="margin:0">${new Date(p.date_maj).toLocaleDateString('fr-FR')}</span>
+          </div>
+        `;
+        phaseModalOverlay.classList.add('open');
+        renderPhaseDetail(phaseId);
+      });
+    });
+
+    document.getElementById('add-phase-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nomPhase = document.getElementById('nom_phase').value.trim();
+      const nextOrdre = phases.length ? Math.max(...phases.map((p) => p.ordre)) + 1 : 1;
+      await supabase.from('project_phases').insert({ project_id: project.id, nom_phase: nomPhase, statut: 'a_venir', ordre: nextOrdre });
+      await render();
+    });
+
+    // ── Fichiers du projet (hors phase) ────────────────────────────────────
+    content.querySelectorAll('#files-list .file-download[data-path]:not(.file-delete)').forEach((btn) => {
+      btn.addEventListener('click', () => downloadPath(btn.dataset.path, btn));
+    });
+    content.querySelectorAll('#files-list .file-delete').forEach((btn) => {
+      wireDeleteConfirm(btn, async () => {
+        await supabase.storage.from('client-files').remove([btn.dataset.path]);
+        await supabase.from('files').delete().eq('id', btn.dataset.fileId);
+        await render();
+      });
+    });
+
+    document.getElementById('upload-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('upload-btn');
+      btn.disabled = true;
+      const fileInput = document.getElementById('file-input');
+      const file = fileInput.files[0];
+      const path = `${project.id}/${Date.now()}_${file.name}`;
+
+      const { error: uploadError } = await supabase.storage.from('client-files').upload(path, file);
+      if (uploadError) {
+        showToast(uploadError.message);
+        btn.disabled = false;
+        return;
+      }
+      await supabase.from('files').insert({ project_id: project.id, type: 'fichier', nom: file.name, storage_path: path, size_bytes: file.size });
+      try {
+        await callFunction('notify-update', { client_id: clientId, type: 'new_file', nom_fichier: file.name });
+      } catch {}
+      btn.disabled = false;
+      await render();
+    });
+
+    // ── Devis ───────────────────────────────────────────────────────────
+    content.querySelectorAll('#quotes-list .file-download[data-path]').forEach((btn) => {
+      btn.addEventListener('click', () => downloadPath(btn.dataset.path, btn));
+    });
+    content.querySelectorAll('select[data-quote-id]').forEach((sel) => {
+      sel.addEventListener('change', async () => {
+        sel.disabled = true;
+        await supabase.from('quotes').update({ statut: sel.value }).eq('id', sel.dataset.quoteId);
+        sel.classList.remove('envoye', 'accepte', 'refuse');
+        sel.classList.add(sel.value);
+        sel.disabled = false;
+      });
+    });
+    document.getElementById('quote-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const montant = parseFloat(document.getElementById('quote-montant').value.replace(',', '.'));
+      const file = document.getElementById('quote-file').files[0];
+      if (!file || isNaN(montant)) return;
+      const path = `${project.id}/quotes/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('client-files').upload(path, file);
+      if (uploadError) { showToast(uploadError.message); return; }
+      await supabase.from('quotes').insert({ project_id: project.id, montant, storage_path: path });
+      try {
+        await callFunction('notify-update', { client_id: clientId, type: 'new_quote', montant });
+      } catch {}
+      await render();
+    });
+
+    // ── Factures ────────────────────────────────────────────────────────
+    content.querySelectorAll('#invoices-list .file-download[data-path]').forEach((btn) => {
+      btn.addEventListener('click', () => downloadPath(btn.dataset.path, btn));
+    });
+    content.querySelectorAll('select[data-invoice-id]').forEach((sel) => {
+      sel.addEventListener('change', async () => {
+        sel.disabled = true;
+        await supabase.from('invoices').update({ statut: sel.value }).eq('id', sel.dataset.invoiceId);
+        sel.classList.remove('envoyee', 'payee');
+        sel.classList.add(sel.value);
+        sel.disabled = false;
+      });
+    });
+    document.getElementById('invoice-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const montant = parseFloat(document.getElementById('invoice-montant').value.replace(',', '.'));
+      const file = document.getElementById('invoice-file').files[0];
+      if (!file || isNaN(montant)) return;
+      const path = `${project.id}/invoices/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('client-files').upload(path, file);
+      if (uploadError) { showToast(uploadError.message); return; }
+      await supabase.from('invoices').insert({ project_id: project.id, montant, storage_path: path });
+      try {
+        await callFunction('notify-update', { client_id: clientId, type: 'new_invoice', montant });
+      } catch {}
+      await render();
+    });
+  }
+}
+
+document.getElementById('logout').addEventListener('click', async (e) => {
+  e.preventDefault();
+  await supabase.auth.signOut();
+  window.location.href = '/admin/';
+});
+document.getElementById('menu-btn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('on');
+});
+document.getElementById('overlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+});
+</script>
+</body>
+</html>

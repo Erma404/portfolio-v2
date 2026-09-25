@@ -16,12 +16,24 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: [],
+      // Client portal (static HTML carried over from the previous site): each
+      // folder's index.html answers at the folder URL, e.g. /espace-client/fichiers/.
+      // beforeFiles rules chain, so subfolders come first: otherwise "/admin" would
+      // become "/admin/index.html" and then match "/admin/:path+" again.
+      beforeFiles: [
+        { source: "/admin/:path+", destination: "/admin/:path+/index.html" },
+        { source: "/espace-client/:path+", destination: "/espace-client/:path+/index.html" },
+        { source: "/admin", destination: "/admin/index.html" },
+        { source: "/espace-client", destination: "/espace-client/index.html" },
+      ],
       // afterFiles run after public files and static pages, but before the
       // dynamic [lang] route would swallow "/works" as a locale.
       afterFiles: [
         { source: "/", destination: "/en" },
-        { source: "/:path((?!en(?:/|$)|fr(?:/|$)|_next/).*)", destination: "/en/:path" },
+        {
+          source: "/:path((?!en(?:/|$)|fr(?:/|$)|_next/|admin(?:/|$)|espace-client(?:/|$)).*)",
+          destination: "/en/:path",
+        },
       ],
       fallback: [],
     };
