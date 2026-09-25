@@ -284,7 +284,7 @@ export const en = {
     email: "ernestinemtb@gmail.com",
     linkedin: "https://www.linkedin.com/in/ernestinematjabo",
     // International format, digits only (e.g. 33612345678). Form submissions open WhatsApp on this number.
-    whatsapp: "",
+    whatsapp: "33611109870",
     form: {
       name: "Name",
       namePlaceholder: "Your name",
