@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:pages": "PAGES_BUILD=1 next build && node scripts/pages-postbuild.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.3.3",

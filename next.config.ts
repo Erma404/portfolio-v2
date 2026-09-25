@@ -6,7 +6,19 @@ import type { NextConfig } from "next";
  * They're declared here rather than in a proxy so the client-side router
  * knows about them too (Link navigation between English pages).
  */
-const nextConfig: NextConfig = {
+// GitHub Pages build (`npm run build:pages`): plain static files. Rewrites and
+// redirects don't exist there, so scripts/pages-postbuild.mjs moves the English
+// pages from out/en/ to the root instead.
+const isPagesBuild = process.env.PAGES_BUILD === "1";
+
+const pagesConfig: NextConfig = {
+  output: "export",
+  trailingSlash: true,
+  // No image server on GitHub Pages: images are served as-is.
+  images: { unoptimized: true },
+};
+
+const serverConfig: NextConfig = {
   async redirects() {
     return [
       // One address per page: "/en/…" is the same as the unprefixed URL.
@@ -40,4 +52,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default isPagesBuild ? pagesConfig : serverConfig;

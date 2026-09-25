@@ -30,6 +30,9 @@ const caveat = Caveat({
   weight: ["500", "600"],
 });
 
+// Only "en" and "fr" exist; anything else is a 404 (also required for static export).
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
