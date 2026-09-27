@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useDictionary } from "@/i18n/provider";
 import { SectionHeading } from "@/components/section-heading";
-import { ServiceCarousel, type Service } from "@/components/ui/services-card";
+import { SpatialSlider, type SpatialItem } from "@/components/spatial-slider";
 
 const ICONS: Record<string, React.ElementType> = {
   target: Target,
@@ -27,7 +27,7 @@ const ICONS: Record<string, React.ElementType> = {
 
 export function WhatIDo() {
   const { whatIDo } = useDictionary();
-  const services: Service[] = whatIDo.services.map((service, i) => ({
+  const services: SpatialItem[] = whatIDo.services.map((service, i) => ({
     number: String(i + 1).padStart(2, "0"),
     title: service.title,
     description: service.description,
@@ -35,7 +35,7 @@ export function WhatIDo() {
   }));
 
   return (
-    <section className="bg-[#fafafa] py-24 sm:py-32">
+    <section className="bg-[#fafafa] pb-8 pt-24 sm:pb-10 sm:pt-32">
       <SectionHeading
         eyebrow={whatIDo.eyebrow}
         title={whatIDo.title}
@@ -44,7 +44,15 @@ export function WhatIDo() {
       />
 
       <div className="mt-16">
-        <ServiceCarousel services={services} nextLabel={whatIDo.nextSlide} />
+        <SpatialSlider
+          items={services}
+          labels={{
+            prev: whatIDo.prev,
+            next: whatIDo.next,
+            goTo: whatIDo.goTo,
+            region: whatIDo.region,
+          }}
+        />
       </div>
     </section>
   );

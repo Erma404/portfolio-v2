@@ -60,16 +60,19 @@ export function Header() {
         <Link
           href={localizePath(locale, "/#top")}
           aria-label={nav.home}
-          className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full sm:mr-1 sm:h-14 sm:w-14"
+          className="relative h-11 w-11 shrink-0 sm:mr-1 sm:h-14 sm:w-14"
         >
-          <Image
-            src="/img/ernestine-sm.jpg"
-            alt={hero.fullName}
-            fill
-            sizes="56px"
-            className="object-cover"
-          />
-          <span className="absolute right-0.5 top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-accent" />
+          <span className="absolute inset-0 overflow-hidden rounded-full">
+            <Image
+              src="/img/ernestine-sm.jpg"
+              alt={hero.fullName}
+              fill
+              sizes="56px"
+              className="object-cover"
+            />
+          </span>
+          {/* "Available" dot sits on the ring (outside the clipped photo). */}
+          <span className="absolute right-0 top-0 h-3 w-3 rounded-full border-2 border-white bg-[#34c759] sm:h-3.5 sm:w-3.5" />
         </Link>
 
         <nav className="flex min-w-0 flex-1 items-center justify-center gap-0.5 sm:gap-1">

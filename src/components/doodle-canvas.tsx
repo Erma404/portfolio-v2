@@ -1,253 +1,346 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useDictionary } from "@/i18n/provider";
+import {
+  EMPTY_BOARD,
+  PALETTE,
+  SHAPES,
+  STROKE_SIZE,
+  drawItem,
+  drawSelection,
+  getTextFont,
+  hitTest,
+  isBoard,
+  moveItem,
+  uid,
+  type Board,
+  type Item,
+  type Point,
+  type ShapeKind,
+} from "@/components/doodle/model";
+import {
+  EraserIcon,
+  FillIcon,
+  PencilIcon,
+  RedoIcon,
+  SelectIcon,
+  ShapeGlyph,
+  ShapesIcon,
+  TextIcon,
+  TrashIcon,
+  UndoIcon,
+} from "@/components/doodle/icons";
 
-type Point = { x: number; y: number };
-type Stroke = {
-  kind: "draw" | "erase";
-  color: string;
-  size: number;
-  points: Point[];
-};
-type TextItem = { x: number; y: number; value: string; color: string };
-type BoardState = { strokes: Stroke[]; texts: TextItem[] };
+type Tool = "select" | "draw" | "eraser" | "shape" | "text" | "fill";
+type Menu = "shapes" | "colors" | null;
 
-type Tool = "select" | "pencil" | "text";
-// The eraser is a one-shot action (clears the board), not a drawing mode.
-type ToolbarItem = Tool | "eraser";
+const STORAGE_KEY = "portfolio-doodle-v2";
 
-const COLORS = ["#111111", "#16412f", "#f5824f", "#a39ef9"];
-const STORAGE_KEY = "portfolio-doodle-v1";
-const EMPTY_STATE: BoardState = { strokes: [], texts: [] };
-
-function loadInitialState(): BoardState {
-  if (typeof window === "undefined") return EMPTY_STATE;
+function loadBoard(): Board {
+  if (typeof window === "undefined") return EMPTY_BOARD;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return EMPTY_STATE;
-    const parsed = JSON.parse(raw);
-    if (parsed && Array.isArray(parsed.strokes) && Array.isArray(parsed.texts)) {
-      return parsed as BoardState;
-    }
+    const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "null");
+    if (isBoard(parsed)) return parsed;
   } catch {
-    // ignore corrupt storage
+    // corrupt or unavailable storage: start empty
   }
-  return EMPTY_STATE;
+  return EMPTY_BOARD;
+}
+
+/** Shape dropped by a simple click: 120×80 (90×90 for square, circle and star). */
+function defaultShapeAt(item: Item & { type: "shape" }): Item & { type: "shape" } {
+  const { x1: x, y1: y } = item;
+  if (item.shape === "arrow") return { ...item, x1: x - 60, y1: y, x2: x + 60, y2: y };
+  const even = item.shape === "square" || item.shape === "circle" || item.shape === "star";
+  const w = even ? 90 : 120;
+  const h = even ? 90 : 80;
+  return { ...item, x1: x - w / 2, y1: y - h / 2, x2: x + w / 2, y2: y + h / 2 };
+}
+
+/** In-progress gesture, kept in a ref so pointer moves don't re-render React. */
+type Gesture =
+  | { kind: "draw"; item: Item & { type: "stroke" } }
+  | { kind: "shape"; item: Item & { type: "shape" } }
+  | { kind: "move"; id: string; from: Point; dx: number; dy: number }
+  | { kind: "erase"; removed: Set<string> };
+
+function ToolButton({
+  label,
+  active,
+  onClick,
+  disabled,
+  children,
+  hasMenu,
+}: {
+  label: string;
+  active?: boolean;
+  onClick: () => void;
+  disabled?: boolean;
+  children: ReactNode;
+  hasMenu?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      title={label}
+      aria-label={label}
+      aria-pressed={active === undefined ? undefined : active}
+      aria-haspopup={hasMenu ? "true" : undefined}
+      disabled={disabled}
+      onClick={onClick}
+      className={`grid h-9 w-9 place-items-center rounded-[10px] transition-colors disabled:cursor-default disabled:opacity-35 ${
+        active ? "bg-black/[0.07]" : "hover:bg-black/[0.04]"
+      }`}
+    >
+      {children}
+    </button>
+  );
 }
 
 export function DoodleCanvas() {
   const { doodle } = useDictionary();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const drawingRef = useRef<Stroke | null>(null);
-  const isPointerDown = useRef(false);
+  const textRef = useRef<HTMLTextAreaElement>(null);
+  const gesture = useRef<Gesture | null>(null);
 
-  const [tool, setTool] = useState<Tool>("pencil");
-  const [color, setColor] = useState(COLORS[0]);
-  // Safe to read storage here: the canvas is only ever rendered on the client
-  // (see the `ssr: false` import in hero.tsx), so there is no hydration pass.
-  const [current, setCurrent] = useState<BoardState>(loadInitialState);
-  const [past, setPast] = useState<BoardState[]>([]);
-  const [future, setFuture] = useState<BoardState[]>([]);
-  const [pendingText, setPendingText] = useState<{ x: number; y: number } | null>(null);
-  const [textDraft, setTextDraft] = useState("");
+  const [tool, setTool] = useState<Tool>("draw");
+  const [shape, setShape] = useState<ShapeKind>("rect");
+  const [color, setColor] = useState(PALETTE[0]);
+  const [menu, setMenu] = useState<Menu>(null);
+  // Client-only component (dynamic import with ssr: false), so storage is safe here.
+  const [board, setBoard] = useState<Board>(loadBoard);
+  const [past, setPast] = useState<Board[]>([]);
+  const [future, setFuture] = useState<Board[]>([]);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [draftText, setDraftText] = useState<{ x: number; y: number; value: string } | null>(null);
+
+  // Latest board for pointer handlers; synced before the paint effects run.
+  const boardRef = useRef(board);
+  useLayoutEffect(() => {
+    boardRef.current = board;
+  }, [board]);
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
     } catch {
-      // storage unavailable, ignore
+      // storage unavailable
     }
-  }, [current]);
+  }, [board]);
 
-  const commit = useCallback(
-    (next: BoardState) => {
-      setPast((p) => [...p, current]);
-      setCurrent(next);
-      setFuture([]);
-    },
-    [current]
-  );
+  const commit = useCallback((next: Board) => {
+    setPast((p) => [...p.slice(-60), boardRef.current]);
+    setFuture([]);
+    setBoard(next);
+  }, []);
 
   const undo = useCallback(() => {
     setPast((p) => {
-      if (p.length === 0) return p;
-      const prev = p[p.length - 1];
-      setFuture((f) => [current, ...f]);
-      setCurrent(prev);
+      if (!p.length) return p;
+      setFuture((f) => [boardRef.current, ...f]);
+      setBoard(p[p.length - 1]);
       return p.slice(0, -1);
     });
-  }, [current]);
+    setSelected(null);
+  }, []);
 
   const redo = useCallback(() => {
     setFuture((f) => {
-      if (f.length === 0) return f;
-      const next = f[0];
-      setPast((p) => [...p, current]);
-      setCurrent(next);
+      if (!f.length) return f;
+      setPast((p) => [...p, boardRef.current]);
+      setBoard(f[0]);
       return f.slice(1);
     });
-  }, [current]);
+    setSelected(null);
+  }, []);
 
-  const clearAll = useCallback(() => {
-    commit(EMPTY_STATE);
-  }, [commit]);
+  // --- Rendering --------------------------------------------------------------
 
-  const redraw = useCallback((live?: Stroke | null) => {
+  const render = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
     const dpr = window.devicePixelRatio || 1;
-    const width = canvas.width / dpr;
-    const height = canvas.height / dpr;
-
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const allStrokes = live ? [...current.strokes, live] : current.strokes;
-    for (const stroke of allStrokes) {
-      if (stroke.points.length < 1) continue;
-      ctx.globalCompositeOperation =
-        stroke.kind === "erase" ? "destination-out" : "source-over";
-      ctx.strokeStyle = stroke.color;
-      ctx.lineWidth = stroke.size;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.beginPath();
-      const [first, ...rest] = stroke.points;
-      ctx.moveTo(first.x, first.y);
-      if (rest.length === 0) {
-        ctx.lineTo(first.x + 0.1, first.y + 0.1);
-      }
-      for (const point of rest) {
-        ctx.lineTo(point.x, point.y);
-      }
-      ctx.stroke();
+    const current = boardRef.current;
+    if (current.background) {
+      ctx.fillStyle = current.background;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    ctx.globalCompositeOperation = "source-over";
-  }, [current]);
+
+    const g = gesture.current;
+    for (const item of current.items) {
+      if (g?.kind === "erase" && g.removed.has(item.id)) continue;
+      const shown = g?.kind === "move" && g.id === item.id ? moveItem(item, g.dx, g.dy) : item;
+      drawItem(ctx, shown);
+      if (item.id === selected) drawSelection(ctx, shown);
+    }
+    if (g?.kind === "draw" || g?.kind === "shape") drawItem(ctx, g.item);
+  }, [selected]);
 
   useEffect(() => {
-    redraw();
-  }, [redraw]);
+    render();
+  }, [board, render]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
-
     const resize = () => {
       const rect = container.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
-      redraw();
+      render();
     };
-
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(container);
+    // Web fonts may land after the first paint of text items.
+    document.fonts?.ready.then(render);
     return () => observer.disconnect();
-  }, [redraw]);
+  }, [render]);
 
-  const getPoint = (e: React.PointerEvent<HTMLCanvasElement>): Point => {
+  // --- Keyboard ---------------------------------------------------------------
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const typing = (e.target as HTMLElement | null)?.closest("input, textarea, [contenteditable]");
+      if (typing) return;
+      if (e.key === "Escape") setMenu(null);
+      if (!containerRef.current?.contains(document.activeElement) && document.activeElement !== document.body) return;
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (e.shiftKey) redo();
+        else undo();
+      } else if ((e.key === "Delete" || e.key === "Backspace") && selected) {
+        e.preventDefault();
+        commit({ ...boardRef.current, items: boardRef.current.items.filter((i) => i.id !== selected) });
+        setSelected(null);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [commit, redo, undo, selected]);
+
+  // --- Pointer ----------------------------------------------------------------
+
+  const pointFrom = (e: React.PointerEvent) => {
     const rect = canvasRef.current!.getBoundingClientRect();
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
   };
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const point = getPoint(e);
+  const commitText = useCallback(() => {
+    setDraftText((draft) => {
+      if (draft && draft.value.trim()) {
+        commit({
+          ...boardRef.current,
+          items: [...boardRef.current.items, { id: uid(), type: "text", color, x: draft.x, y: draft.y, value: draft.value.trimEnd() }],
+        });
+      }
+      return null;
+    });
+  }, [color, commit]);
+
+  const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    setMenu(null);
+    const p = pointFrom(e);
+    const items = boardRef.current.items;
 
     if (tool === "text") {
-      setPendingText(point);
-      setTextDraft("");
+      // Let the pointerdown finish first so the new textarea keeps focus.
+      e.preventDefault();
+      if (draftText) commitText();
+      setDraftText({ x: p.x, y: p.y - 4, value: "" });
       return;
     }
-    if (tool === "select") return;
 
-    isPointerDown.current = true;
-    drawingRef.current = {
-      kind: "draw",
-      color,
-      size: 3,
-      points: [point],
-    };
-    canvasRef.current?.setPointerCapture(e.pointerId);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!isPointerDown.current || !drawingRef.current) return;
-    const point = getPoint(e);
-    drawingRef.current.points.push(point);
-    redraw(drawingRef.current);
-  };
-
-  const handlePointerUp = () => {
-    if (!isPointerDown.current || !drawingRef.current) return;
-    isPointerDown.current = false;
-    const finished = drawingRef.current;
-    drawingRef.current = null;
-    commit({ ...current, strokes: [...current.strokes, finished] });
-  };
-
-  const commitText = () => {
-    if (pendingText && textDraft.trim()) {
-      commit({
-        ...current,
-        texts: [
-          ...current.texts,
-          { x: pendingText.x, y: pendingText.y, value: textDraft.trim(), color },
-        ],
-      });
+    if (tool === "fill") {
+      const hit = hitTest(items, p);
+      if (hit?.type === "shape" && hit.shape !== "arrow") {
+        commit({ ...boardRef.current, items: items.map((i) => (i.id === hit.id ? { ...hit, fill: color } : i)) });
+      } else if (!hit) {
+        commit({ ...boardRef.current, background: color });
+      }
+      return;
     }
-    setPendingText(null);
-    setTextDraft("");
+
+    if (tool === "select") {
+      const hit = hitTest(items, p);
+      setSelected(hit?.id ?? null);
+      if (!hit) return;
+      gesture.current = { kind: "move", id: hit.id, from: p, dx: 0, dy: 0 };
+    } else if (tool === "draw") {
+      gesture.current = { kind: "draw", item: { id: uid(), type: "stroke", color, size: STROKE_SIZE, points: [p] } };
+    } else if (tool === "shape") {
+      gesture.current = {
+        kind: "shape",
+        item: { id: uid(), type: "shape", shape, color, fill: null, x1: p.x, y1: p.y, x2: p.x, y2: p.y },
+      };
+    } else if (tool === "eraser") {
+      const hit = hitTest(items, p, 10);
+      gesture.current = { kind: "erase", removed: new Set(hit ? [hit.id] : []) };
+    }
+    canvasRef.current?.setPointerCapture(e.pointerId);
+    render();
   };
 
-  const tools: { id: ToolbarItem; label: string; icon: React.ReactNode }[] = useMemo(
-    () => [
-      {
-        id: "select",
-        label: doodle.select,
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 2l9.5 5.2-4 1.1-1.1 4L3 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-          </svg>
-        ),
-      },
-      {
-        id: "pencil",
-        label: doodle.pencil,
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M11 2.5 13.5 5 5 13.5 2 14l.5-3L11 2.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-          </svg>
-        ),
-      },
-      {
-        id: "eraser",
-        label: doodle.clear,
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M9.5 2.5 13 6l-6 6H4L1.5 9.5l6-6.3a1 1 0 0 1 2 0Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-            <path d="M4 12h9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-          </svg>
-        ),
-      },
-      {
-        id: "text",
-        label: doodle.text,
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 3.5h10M8 3.5V13" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-          </svg>
-        ),
-      },
-    ],
-    [doodle]
-  );
+  const onPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const g = gesture.current;
+    if (!g) return;
+    const p = pointFrom(e);
+    if (g.kind === "draw") g.item.points.push(p);
+    else if (g.kind === "shape") {
+      g.item.x2 = p.x;
+      g.item.y2 = p.y;
+    } else if (g.kind === "move") {
+      g.dx = p.x - g.from.x;
+      g.dy = p.y - g.from.y;
+    } else if (g.kind === "erase") {
+      const hit = hitTest(boardRef.current.items.filter((i) => !g.removed.has(i.id)), p, 10);
+      if (hit) g.removed.add(hit.id);
+    }
+    render();
+  };
+
+  const onPointerUp = () => {
+    const g = gesture.current;
+    gesture.current = null;
+    if (!g) return;
+    const current = boardRef.current;
+    if (g.kind === "draw") commit({ ...current, items: [...current.items, g.item] });
+    else if (g.kind === "shape") {
+      const dragged = Math.abs(g.item.x2 - g.item.x1) > 4 || Math.abs(g.item.y2 - g.item.y1) > 4;
+      // A plain click drops a default-size shape centred on the pointer.
+      const item = dragged ? g.item : defaultShapeAt(g.item);
+      commit({ ...current, items: [...current.items, item] });
+    } else if (g.kind === "move") {
+      if (g.dx || g.dy) {
+        commit({ ...current, items: current.items.map((i) => (i.id === g.id ? moveItem(i, g.dx, g.dy) : i)) });
+      } else render();
+    } else if (g.kind === "erase") {
+      if (g.removed.size) commit({ ...current, items: current.items.filter((i) => !g.removed.has(i.id)) });
+      else render();
+    }
+  };
+
+  useEffect(() => {
+    if (draftText) textRef.current?.focus();
+  }, [draftText]);
+
+  const pickTool = (next: Tool) => {
+    if (draftText) commitText();
+    setTool(next);
+    if (next !== "select") setSelected(null);
+    setMenu(next === "shape" ? (menu === "shapes" ? null : "shapes") : null);
+  };
+
+  const cursor =
+    tool === "text" ? "text" : tool === "select" ? "default" : tool === "fill" ? "pointer" : "crosshair";
 
   return (
     <div className="relative mx-auto mt-4 w-full max-w-[860px] sm:mt-6">
@@ -262,105 +355,134 @@ export function DoodleCanvas() {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 h-full w-full touch-none"
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerUp}
-          style={{ cursor: tool === "select" ? "default" : "crosshair" }}
+          style={{ cursor }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
         />
 
-        {current.texts.map((t, i) => (
-          <span
-            key={i}
-            className="font-hand pointer-events-none absolute text-xl"
-            style={{ left: t.x, top: t.y - 14, color: t.color }}
-          >
-            {t.value}
-          </span>
-        ))}
-
-        {pendingText && (
-          <input
-            autoFocus
-            aria-label={doodle.textPlaceholder}
-            value={textDraft}
-            onChange={(e) => setTextDraft(e.target.value)}
+        {draftText && (
+          <textarea
+            ref={textRef}
+            value={draftText.value}
+            placeholder={doodle.textPlaceholder}
+            aria-label={doodle.text}
+            rows={1}
+            onChange={(e) => setDraftText({ ...draftText, value: e.target.value })}
             onBlur={commitText}
             onKeyDown={(e) => {
-              if (e.key === "Enter") commitText();
-              if (e.key === "Escape") {
-                setPendingText(null);
-                setTextDraft("");
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                commitText();
               }
+              if (e.key === "Escape") setDraftText(null);
             }}
-            className="font-hand absolute z-10 border-b border-dashed border-foreground/40 bg-transparent text-xl outline-none"
-            style={{ left: pendingText.x, top: pendingText.y - 20, color }}
+            className="absolute z-10 min-w-[10rem] resize-none overflow-hidden border-0 bg-transparent p-0 leading-[26px] outline-none placeholder:text-black/30"
+            style={{ left: draftText.x, top: draftText.y, color, font: getTextFont(), height: 26 * (draftText.value.split("\n").length) }}
           />
         )}
 
-        <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex justify-center">
-          <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-black/5 bg-white/95 p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur">
-            {tools.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                aria-label={t.label}
-                aria-pressed={t.id === "eraser" ? undefined : tool === t.id}
-                onClick={() => (t.id === "eraser" ? clearAll() : setTool(t.id))}
-                className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors sm:h-8 sm:w-8 ${
-                  tool === t.id
-                    ? "bg-accent-soft text-accent"
-                    : "text-foreground/50 hover:text-foreground"
-                }`}
-              >
-                {t.icon}
-              </button>
-            ))}
-
-            <span className="mx-1 h-5 w-px bg-border" />
-
+        {/* Toolbar */}
+        <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex flex-col items-center gap-2 px-3">
+          <div className="pointer-events-auto flex max-w-full items-center gap-0.5 overflow-x-auto rounded-2xl bg-[#faf9f5] p-1.5 shadow-[0_2px_20px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.04)]">
+            <ToolButton label={doodle.select} active={tool === "select"} onClick={() => pickTool("select")}>
+              <SelectIcon />
+            </ToolButton>
+            <ToolButton label={doodle.pencil} active={tool === "draw"} onClick={() => pickTool("draw")}>
+              <PencilIcon />
+            </ToolButton>
+            <ToolButton label={doodle.eraser} active={tool === "eraser"} onClick={() => pickTool("eraser")}>
+              <EraserIcon />
+            </ToolButton>
+            <span className="mx-1 h-5 w-px bg-black/10" />
+            <ToolButton label={doodle.shape} active={tool === "shape"} hasMenu onClick={() => pickTool("shape")}>
+              <ShapesIcon />
+            </ToolButton>
+            <ToolButton label={doodle.text} active={tool === "text"} onClick={() => pickTool("text")}>
+              <TextIcon />
+            </ToolButton>
+            <ToolButton label={doodle.fill} active={tool === "fill"} onClick={() => pickTool("fill")}>
+              <FillIcon />
+            </ToolButton>
+            <span className="mx-1 h-5 w-px bg-black/10" />
             <button
               type="button"
+              title={doodle.color}
               aria-label={doodle.color}
-              onClick={() =>
-                setColor((c) => COLORS[(COLORS.indexOf(c) + 1) % COLORS.length])
-              }
-              className="flex h-7 w-7 items-center justify-center rounded-full sm:h-8 sm:w-8"
+              aria-haspopup="true"
+              aria-expanded={menu === "colors"}
+              onClick={() => setMenu(menu === "colors" ? null : "colors")}
+              className="grid h-9 w-9 place-items-center rounded-[10px] hover:bg-black/[0.04]"
             >
-              <span
-                className="h-4 w-4 rounded-full border border-black/20"
-                style={{ backgroundColor: color }}
-              />
+              <span className="h-6 w-6 rounded-[7px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.12)]" style={{ backgroundColor: color }} />
             </button>
-
-            <span className="mx-1 h-5 w-px bg-border" />
-
-            <button
-              type="button"
-              aria-label={doodle.undo}
-              disabled={past.length === 0}
-              onClick={undo}
-              className="flex h-7 w-7 items-center justify-center rounded-full text-foreground/50 transition-colors hover:text-foreground disabled:opacity-30 sm:h-8 sm:w-8"
+            <span className="mx-1 h-5 w-px bg-black/10" />
+            <ToolButton label={doodle.undo} disabled={!past.length} onClick={undo}>
+              <UndoIcon />
+            </ToolButton>
+            <ToolButton label={doodle.redo} disabled={!future.length} onClick={redo}>
+              <RedoIcon />
+            </ToolButton>
+            <ToolButton
+              label={doodle.clear}
+              disabled={!board.items.length && !board.background}
+              onClick={() => {
+                commit(EMPTY_BOARD);
+                setSelected(null);
+              }}
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M4 6H11a3.5 3.5 0 0 1 0 7H7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-                <path d="M6.5 3.5 4 6l2.5 2.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              aria-label={doodle.redo}
-              disabled={future.length === 0}
-              onClick={redo}
-              className="flex h-7 w-7 items-center justify-center rounded-full text-foreground/50 transition-colors hover:text-foreground disabled:opacity-30 sm:h-8 sm:w-8"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M12 6H5a3.5 3.5 0 0 0 0 7h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-                <path d="M9.5 3.5 12 6l-2.5 2.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
+              <TrashIcon />
+            </ToolButton>
           </div>
+
+          {menu === "shapes" && (
+            <div
+              role="group"
+              aria-label={doodle.shape}
+              className="pointer-events-auto flex items-center gap-0.5 rounded-2xl bg-[#faf9f5] p-1.5 shadow-[0_2px_20px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.04)]"
+            >
+              {SHAPES.map((kind) => (
+                <ToolButton
+                  key={kind}
+                  label={doodle.shapes[kind]}
+                  active={shape === kind}
+                  onClick={() => {
+                    setShape(kind);
+                    setTool("shape");
+                    setMenu(null);
+                  }}
+                >
+                  <ShapeGlyph shape={kind} />
+                </ToolButton>
+              ))}
+            </div>
+          )}
+
+          {menu === "colors" && (
+            <div
+              role="group"
+              aria-label={doodle.color}
+              className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-2xl bg-[#faf9f5] p-2 shadow-[0_2px_20px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.04)]"
+            >
+              {PALETTE.map((swatch) => (
+                <button
+                  key={swatch}
+                  type="button"
+                  aria-label={swatch}
+                  aria-pressed={swatch === color}
+                  onClick={() => {
+                    setColor(swatch);
+                    setMenu(null);
+                  }}
+                  className="grid h-7 w-7 place-items-center rounded-[8px] transition-transform hover:scale-110"
+                  style={{ backgroundColor: swatch === color ? "transparent" : swatch }}
+                >
+                  {swatch === color && <span className="h-4 w-4 rounded-[5px]" style={{ backgroundColor: swatch }} />}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -37,12 +37,24 @@ export const fr: Dictionary = {
   doodle: {
     select: "Sélection",
     pencil: "Crayon",
-    clear: "Tout effacer",
+    eraser: "Gomme",
+    shape: "Formes",
     text: "Texte",
-    color: "Changer de couleur",
+    fill: "Remplissage",
+    color: "Couleur",
     undo: "Annuler",
     redo: "Rétablir",
-    textPlaceholder: "Écrivez ici…",
+    clear: "Tout effacer",
+    textPlaceholder: "Écrivez, puis Entrée",
+    shapes: {
+      rect: "Rectangle",
+      square: "Carré",
+      circle: "Cercle",
+      hexagon: "Hexagone",
+      star: "Étoile",
+      arrow: "Flèche",
+      rounded: "Rectangle arrondi",
+    },
   },
 
   expertise: [
@@ -59,7 +71,10 @@ export const fr: Dictionary = {
   whatIDo: {
     eyebrow: "Ce que je fais",
     title: "Comment je donne vie à votre vision produit.",
-    nextSlide: "Diapositive suivante",
+    prev: "Précédent",
+    next: "Suivant",
+    goTo: "Aller à la carte",
+    region: "Services",
     services: [
       {
         icon: "target",

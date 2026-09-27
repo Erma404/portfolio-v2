@@ -75,21 +75,36 @@ export function Hero() {
               className="pointer-events-none absolute -top-24 right-[4%] z-20 hidden flex-col items-center md:flex lg:right-[7%]"
             >
               <p className="font-hand text-2xl text-foreground/80">{hero.doodleHint}</p>
-              <svg
+              {/* Draws itself, holds, then fades and starts again; bobs gently. */}
+              <motion.svg
                 width="40"
                 height="48"
                 viewBox="0 0 40 48"
                 fill="none"
                 className="mt-2 text-foreground/70"
+                animate={{ y: [0, 4, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
               >
-                <path
-                  d="M12 3c14 4 20 16 14 28-2 4-6 8-11 11M15 42l-1-9M15 42l8-3"
+                <motion.path
+                  d="M12 3c14 4 20 16 14 28-2 4-6 8-11 11"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0, opacity: 1 }}
+                  animate={{ pathLength: [0, 1, 1, 1], opacity: [1, 1, 1, 0] }}
+                  transition={{ duration: 3.2, times: [0, 0.4, 0.85, 1], repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.path
+                  d="M15 42l-1-9M15 42l8-3"
                   stroke="currentColor"
                   strokeWidth="1.8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  initial={{ pathLength: 0, opacity: 1 }}
+                  animate={{ pathLength: [0, 0, 1, 1, 1], opacity: [1, 1, 1, 1, 0] }}
+                  transition={{ duration: 3.2, times: [0, 0.4, 0.55, 0.85, 1], repeat: Infinity, ease: "easeOut" }}
                 />
-              </svg>
+              </motion.svg>
             </div>
             <ContainerScroll titleComponent={<></>}>
               <DoodleCanvas />

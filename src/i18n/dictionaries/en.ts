@@ -33,13 +33,25 @@ export const en = {
 
   doodle: {
     select: "Select",
-    pencil: "Pencil",
-    clear: "Clear board",
+    pencil: "Draw",
+    eraser: "Eraser",
+    shape: "Shapes",
     text: "Text",
-    color: "Change color",
+    fill: "Fill",
+    color: "Color",
     undo: "Undo",
     redo: "Redo",
-    textPlaceholder: "Type here…",
+    clear: "Clear board",
+    textPlaceholder: "Type, then Enter",
+    shapes: {
+      rect: "Rectangle",
+      square: "Square",
+      circle: "Circle",
+      hexagon: "Hexagon",
+      star: "Star",
+      arrow: "Arrow",
+      rounded: "Rounded rectangle",
+    },
   },
 
   expertise: [
@@ -56,7 +68,10 @@ export const en = {
   whatIDo: {
     eyebrow: "What I Do",
     title: "Ways I bring your product vision to life.",
-    nextSlide: "Next slide",
+    prev: "Prev",
+    next: "Next",
+    goTo: "Go to card",
+    region: "Services",
     services: [
       {
         icon: "target",

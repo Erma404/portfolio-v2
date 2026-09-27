@@ -14,7 +14,7 @@ export function Work() {
   const studies = getCaseStudies(locale);
 
   return (
-    <section id="work" className="bg-[#fafafa] py-24 sm:py-32">
+    <section id="work" className="bg-[#fafafa] pb-24 pt-12 sm:pb-32 sm:pt-16">
       <SectionHeading
         eyebrow={work.eyebrow}
         title={work.title}
