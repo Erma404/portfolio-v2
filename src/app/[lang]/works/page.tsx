@@ -6,7 +6,8 @@ import { Footer } from "@/components/footer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/reveal";
 import { WorkCard } from "@/components/works/work-card";
 import { getCaseStudies } from "@/lib/case-studies";
-import { alternatesFor, hasLocale } from "@/i18n/config";
+import { hasLocale } from "@/i18n/config";
+import { pageMetadata } from "@/lib/seo";
 import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(
@@ -15,11 +16,7 @@ export async function generateMetadata(
   const { lang } = await props.params;
   if (!hasLocale(lang)) return {};
   const { works } = getDictionary(lang);
-  return {
-    title: works.metaTitle,
-    description: works.text,
-    alternates: alternatesFor("/works", lang),
-  };
+  return pageMetadata({ lang, path: "/works", title: works.metaTitle, description: works.text });
 }
 
 export default async function WorksPage(props: PageProps<"/[lang]/works">) {

@@ -7,18 +7,22 @@ import { Footer } from "@/components/footer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/reveal";
 import { AboutHero } from "@/components/about/about-hero";
 import { Journey } from "@/components/about/journey";
-import { alternatesFor, hasLocale } from "@/i18n/config";
+import { hasLocale } from "@/i18n/config";
+import { absoluteUrl, jsonLd, pageMetadata, personJsonLd } from "@/lib/seo";
+import { localizePath } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(props: PageProps<"/[lang]/about">): Promise<Metadata> {
   const { lang } = await props.params;
   if (!hasLocale(lang)) return {};
   const { aboutPage } = getDictionary(lang);
-  return {
+  return pageMetadata({
+    lang,
+    path: "/about",
     title: aboutPage.metaTitle,
     description: aboutPage.metaDescription,
-    alternates: alternatesFor("/about", lang),
-  };
+    type: "profile",
+  });
 }
 
 export default async function AboutPage(props: PageProps<"/[lang]/about">) {
@@ -26,8 +30,18 @@ export default async function AboutPage(props: PageProps<"/[lang]/about">) {
   if (!hasLocale(lang)) notFound();
   const { aboutPage } = getDictionary(lang);
 
+  const structuredData = {
+    "@type": "ProfilePage",
+    url: absoluteUrl(localizePath(lang, "/about")),
+    name: aboutPage.metaTitle,
+    description: aboutPage.metaDescription,
+    inLanguage: lang,
+    mainEntity: personJsonLd(lang),
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }} />
       {/* Opaque layer over the sticky footer (see the home page). */}
       <div className="relative z-10 flex flex-1 flex-col bg-background">
         <Header />

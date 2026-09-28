@@ -14,7 +14,7 @@ export const caseStudiesEn: CaseStudy[] = [
     kind: "Product builder",
     tint: "from-[#f6d9c4] via-[#e9b48f] to-[#b8743f]",
     cover: {
-      src: "/img/works/stefcos/admin-dashboard.jpg",
+      src: "/img/works/stefcos/admin-dashboard.avif",
       width: 1920,
       height: 1200,
       alt: "Stefcos admin dashboard: today's orders, revenue in FCFA and courier availability",
@@ -138,7 +138,7 @@ export const caseStudiesEn: CaseStudy[] = [
     kind: "Product builder & project manager",
     tint: "from-[#e4f5c4] via-[#b9e36a] to-[#1f4b5a]",
     cover: {
-      src: "/img/works/certiphy/home-en.jpg",
+      src: "/img/works/certiphy/home-en.avif",
       width: 1440,
       height: 840,
       alt: "Certiphy home page: “Take back control of your creations”",
@@ -213,7 +213,7 @@ export const caseStudiesEn: CaseStudy[] = [
         caption: "The French home page",
       },
       {
-        src: "/img/works/certiphy/home-fr.jpg",
+        src: "/img/works/certiphy/home-fr.avif",
         width: 1440,
         height: 840,
         alt: "French version of the Certiphy site: “Reprenez le contrôle de vos créations”",

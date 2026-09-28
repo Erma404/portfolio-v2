@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { useDictionary } from "@/i18n/provider";
 import { AnimatedBadgeWord } from "@/components/animated-badge-word";
@@ -29,44 +30,34 @@ export function Hero() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center px-6 pb-20 pt-28 text-center sm:pb-28 sm:pt-32">
-          <motion.span
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-3.5 py-1.5 text-xs font-medium text-foreground/80 backdrop-blur"
+          <span
+            style={{ "--rise": "12px", animationDuration: "0.6s" } as CSSProperties}
+            className="hero-rise mb-8 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-3.5 py-1.5 text-xs font-medium text-foreground/80 backdrop-blur"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
             {hero.status}
-          </motion.span>
+          </span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-[clamp(2.75rem,7vw,5.5rem)] leading-[1.05] tracking-tight text-foreground"
-          >
-            {hero.titleStart} <AnimatedBadgeWord words={hero.badgeWords} />
-          </motion.h1>
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-[clamp(2.75rem,7vw,5.5rem)] leading-[1.05] tracking-tight text-foreground"
-          >
-            {hero.titleEnd}
-          </motion.h1>
+          {/* Entrance runs in CSS, not JS, so the text paints before hydration.
+              One h1 for search engines; each line still animates in on its own. */}
+          <h1 className="font-serif text-[clamp(2.75rem,7vw,5.5rem)] leading-[1.05] tracking-tight text-foreground">
+            <span className="hero-rise block" style={{ animationDelay: "0.1s" }}>
+              {hero.titleStart} <AnimatedBadgeWord words={hero.badgeWords} />
+            </span>{" "}
+            <span className="hero-rise block" style={{ animationDelay: "0.18s" }}>
+              {hero.titleEnd}
+            </span>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 max-w-xl text-lg text-foreground/70"
+          <p
+            style={{ "--rise": "16px", animationDuration: "0.7s", animationDelay: "0.3s" } as CSSProperties}
+            className="hero-rise mt-8 max-w-xl text-lg text-foreground/70"
           >
             {hero.pitch}
-          </motion.p>
+          </p>
 
           <div className="relative w-full">
             {/* Lives outside the tilted card, whose frame would clip it. */}

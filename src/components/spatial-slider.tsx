@@ -73,7 +73,7 @@ function SpatialCard({
       }}
     >
       <div className="flex flex-col items-start">
-        <span className="mb-8 font-mono text-sm text-white/40">( {item.number} )</span>
+        <span className="mb-8 font-mono text-sm text-white/60">( {item.number} )</span>
         <div className="relative flex h-12 w-12 items-center justify-center text-[#f5824f]">
           <span className="absolute left-0 top-0 h-2.5 w-2.5 border-l border-t border-[#f5824f]/50" />
           <span className="absolute right-0 top-0 h-2.5 w-2.5 border-r border-t border-[#f5824f]/50" />

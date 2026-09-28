@@ -10,7 +10,8 @@ import { Reveal } from "@/components/reveal";
 import { CaseVisual } from "@/components/works/case-visual";
 import { WorkCard } from "@/components/works/work-card";
 import { getCaseStudies, getCaseStudy } from "@/lib/case-studies";
-import { alternatesFor, hasLocale, localizePath, locales } from "@/i18n/config";
+import { hasLocale, localizePath, locales } from "@/i18n/config";
+import { absoluteUrl, jsonLd, pageMetadata, personJsonLd } from "@/lib/seo";
 import { getDictionary } from "@/i18n/dictionaries";
 
 export const dynamicParams = false;
@@ -29,11 +30,19 @@ export async function generateMetadata(
   const study = getCaseStudy(lang, slug);
   if (!study) return {};
   const { works } = getDictionary(lang);
-  return {
+  const { src, width, height, alt } = study.cover;
+  // Social networks don't render AVIF: those covers have a 1200×630 JPEG copy.
+  const image = src.endsWith(".avif")
+    ? { url: `/img/og/${slug}.jpg`, width: 1200, height: 630, alt }
+    : { url: src, width, height, alt };
+  return pageMetadata({
+    lang,
+    path: `/works/${slug}`,
     title: `${study.client} — ${works.labels.caseStudy} — Ernestine Matjabo`,
     description: study.summary,
-    alternates: alternatesFor(`/works/${slug}`, lang),
-  };
+    image,
+    type: "article",
+  });
 }
 
 /** Label on the left (sticky on desktop), content on the right. */
@@ -97,8 +106,37 @@ export default async function CaseStudyPage(
     (step) => caseStudies[(index + step) % caseStudies.length],
   );
 
+  const url = absoluteUrl(localizePath(lang, `/works/${study.slug}`));
+  const structuredData = {
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        "@id": `${url}#case-study`,
+        url,
+        name: study.title,
+        headline: study.title,
+        description: study.summary,
+        inLanguage: lang,
+        image: absoluteUrl(study.cover.src),
+        author: personJsonLd(lang),
+        about: study.client,
+        temporalCoverage: study.period,
+        genre: study.kind,
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Ernestine Matjabo", item: absoluteUrl(localizePath(lang, "/")) },
+          { "@type": "ListItem", position: 2, name: works.metaTitle, item: absoluteUrl(localizePath(lang, "/works")) },
+          { "@type": "ListItem", position: 3, name: study.client, item: url },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }} />
       {/* Opaque layer over the sticky footer: it covers the header zone too,
           so the footer only shows once the page has scrolled past it. */}
       <div className="relative z-10 flex flex-1 flex-col bg-background">

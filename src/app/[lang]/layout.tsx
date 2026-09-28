@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { alternatesFor, hasLocale, locales, siteUrl } from "@/i18n/config";
+import { hasLocale, locales, siteUrl } from "@/i18n/config";
+import { pageMetadata } from "@/lib/seo";
 import { getDictionary } from "@/i18n/dictionaries";
 import { I18nProvider } from "@/i18n/provider";
 import { Inter, Inter_Tight, Instrument_Serif, Caveat } from "next/font/google";
@@ -43,9 +44,7 @@ export async function generateMetadata(props: LayoutProps<"/[lang]">): Promise<M
   const { meta } = getDictionary(lang);
   return {
     metadataBase: new URL(siteUrl),
-    title: meta.title,
-    description: meta.description,
-    alternates: alternatesFor("/", lang),
+    ...pageMetadata({ lang, path: "/", title: meta.title, description: meta.description }),
   };
 }
 

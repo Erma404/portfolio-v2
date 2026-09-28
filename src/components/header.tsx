@@ -30,7 +30,7 @@ function LanguageToggle({ path }: { path: string }) {
             aria-current={active ? "true" : undefined}
             aria-label={active ? undefined : nav.switchTo}
             className={`rounded-full px-2 py-1.5 transition-colors sm:px-2.5 ${
-              active ? "bg-white text-foreground shadow-sm" : "text-foreground/50 hover:text-foreground"
+              active ? "bg-white text-foreground shadow-sm" : "text-foreground/65 hover:text-foreground"
             }`}
           >
             {code}
