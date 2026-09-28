@@ -323,8 +323,9 @@ export const fr: Dictionary = {
   },
 
   footer: {
-    words: ["Construisons", "Imaginons", "Lançons"],
-    tagline: "ensemble des produits qui comptent.",
+    title: "Construisons ensemble",
+    tagline: "des produits qui",
+    words: ["performent.", "grandissent.", "durent."],
     badge: "• Disponible • Pour vos projets ",
     badgeLabel: "Disponible pour vos projets, m'écrire par email",
     navLabel: "Pied de page",

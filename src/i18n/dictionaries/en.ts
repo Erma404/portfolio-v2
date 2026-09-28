@@ -318,9 +318,10 @@ export const en = {
   },
 
   footer: {
-    // Typed one after another on the first line of the footer title.
-    words: ["Let's build", "Let's design", "Let's launch"],
-    tagline: "products that matter, together.",
+    title: "Let's build together",
+    // "products that <word>": the words are typed one after another.
+    tagline: "products that",
+    words: ["perform.", "scale.", "last."],
     badge: "• Available • For your projects ",
     badgeLabel: "Available for your projects, email me",
     navLabel: "Footer",

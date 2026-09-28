@@ -115,11 +115,13 @@ export function Footer() {
       <div className="mx-auto flex w-full max-w-[1200px] flex-col justify-between gap-16 px-4 pb-10 pt-24 sm:px-6 sm:pt-32">
         <div className="flex flex-1 flex-col items-start justify-center gap-12 md:flex-row md:items-center md:justify-between">
           <h2 className="font-serif text-[clamp(3rem,8vw,7.5rem)] leading-[1.02] tracking-tight">
-            {/* min-height keeps the line when the word is fully erased. */}
-            <span className="block min-h-[1.02em] text-white">
-              <Typewriter words={footer.words} />
+            <span className="block text-white">{footer.title}</span>
+            <span className="block text-white/45">
+              {footer.tagline}{" "}
+              <span className="whitespace-nowrap text-[#f08a4b]">
+                <Typewriter words={footer.words} />
+              </span>
             </span>
-            <span className="block text-white/45">{footer.tagline}</span>
           </h2>
           <AvailableBadge />
         </div>
