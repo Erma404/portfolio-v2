@@ -49,7 +49,7 @@ export function Header() {
 
   // "Home" hides on phones: the portrait already links home, and FR labels are long.
   const links = [
-    { label: nav.home, href: "/#top", active: path === "/", mobile: false },
+    { label: nav.home, href: "/", active: path === "/", mobile: false },
     { label: nav.work, href: "/works", active: path.startsWith("/works"), mobile: true },
     { label: nav.about, href: "/about", active: path.startsWith("/about"), mobile: true },
   ];
@@ -58,7 +58,7 @@ export function Header() {
     <header className="sticky top-4 z-50 flex justify-center px-4">
       <div className="flex w-full max-w-[46rem] items-center gap-1.5 rounded-full border border-black/5 bg-white/90 p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-md sm:gap-2 sm:p-2.5">
         <Link
-          href={localizePath(locale, "/#top")}
+          href={localizePath(locale, "/")}
           aria-label={nav.home}
           className="relative h-11 w-11 shrink-0 sm:mr-1 sm:h-14 sm:w-14"
         >

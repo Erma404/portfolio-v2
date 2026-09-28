@@ -113,8 +113,37 @@ export function Testimonials() {
           </h2>
         </Reveal>
 
+        {/* Cards */}
+        <div
+          className={`mt-10 sm:mt-12 ${scroll ? "marquee-group overflow-hidden" : ""}`}
+          style={
+            scroll
+              ? {
+                  WebkitMaskImage:
+                    "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+                  maskImage:
+                    "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+                }
+              : undefined
+          }
+        >
+          <div
+            className={
+              scroll
+                ? "marquee-track flex w-max gap-5 pr-5"
+                : "flex flex-wrap justify-center gap-5"
+            }
+            style={scroll ? { animationDuration: `${half.length * 8}s` } : undefined}
+          >
+            {cards.map((item, i) => (
+              <div key={`${item.author}-${i}`} className="flex" aria-hidden={i >= items.length || undefined}>
+                <TestimonialCard {...item} />
+              </div>
+            ))}
+          </div>
+        </div>
         {/* Capsule with the rotating sweep */}
-        <div className="relative mx-auto mt-10 min-h-[20rem] max-w-[600px] overflow-hidden rounded-[2.5rem] sm:mt-12 md:aspect-[1200/614] md:min-h-0 md:rounded-full">
+        <div className="relative mx-auto mt-12 min-h-[20rem] max-w-[600px] overflow-hidden rounded-[2.5rem] sm:mt-16 md:aspect-[1200/614] md:min-h-0 md:rounded-full">
           <div
             aria-hidden
             className="absolute left-1/2 top-1/2 aspect-square w-[260%] -translate-x-1/2 -translate-y-1/2 md:w-[180%]"
@@ -160,35 +189,6 @@ export function Testimonials() {
           </div>
         </div>
 
-        {/* Cards */}
-        <div
-          className={`mt-6 ${scroll ? "marquee-group overflow-hidden" : ""}`}
-          style={
-            scroll
-              ? {
-                  WebkitMaskImage:
-                    "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-                  maskImage:
-                    "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-                }
-              : undefined
-          }
-        >
-          <div
-            className={
-              scroll
-                ? "marquee-track flex w-max gap-5 pr-5"
-                : "flex flex-wrap justify-center gap-5"
-            }
-            style={scroll ? { animationDuration: `${half.length * 8}s` } : undefined}
-          >
-            {cards.map((item, i) => (
-              <div key={`${item.author}-${i}`} className="flex" aria-hidden={i >= items.length || undefined}>
-                <TestimonialCard {...item} />
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
