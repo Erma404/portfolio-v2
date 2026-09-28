@@ -45,6 +45,8 @@ export async function generateMetadata(props: LayoutProps<"/[lang]">): Promise<M
   return {
     metadataBase: new URL(siteUrl),
     ...pageMetadata({ lang, path: "/", title: meta.title, description: meta.description }),
+    // Bing Webmaster Tools ownership (same code as public/BingSiteAuth.xml).
+    verification: { other: { "msvalidate.01": "F0AE678CF49E5182A81717A1C8256F03" } },
   };
 }
 
