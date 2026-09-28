@@ -11,7 +11,6 @@ import {
   drawSelection,
   getTextFont,
   hitTest,
-  isBoard,
   moveItem,
   uid,
   type Board,
@@ -28,25 +27,16 @@ import {
   ShapeGlyph,
   ShapesIcon,
   TextIcon,
-  TrashIcon,
   UndoIcon,
 } from "@/components/doodle/icons";
 
-type Tool = "select" | "draw" | "eraser" | "shape" | "text" | "fill";
+// The eraser is a one-shot action (clears the board), not a drawing mode.
+type Tool = "select" | "draw" | "shape" | "text" | "fill";
 type Menu = "shapes" | "colors" | null;
 
-const STORAGE_KEY = "portfolio-doodle-v2";
-
-function loadBoard(): Board {
-  if (typeof window === "undefined") return EMPTY_BOARD;
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "null");
-    if (isBoard(parsed)) return parsed;
-  } catch {
-    // corrupt or unavailable storage: start empty
-  }
-  return EMPTY_BOARD;
-}
+// Drawings used to be saved in the browser; the board now starts empty on every
+// visit, so leftovers from those versions are removed.
+const LEGACY_STORAGE_KEYS = ["portfolio-doodle-v1", "portfolio-doodle-v2"];
 
 /** Shape dropped by a simple click: 120×80 (90×90 for square, circle and star). */
 function defaultShapeAt(item: Item & { type: "shape" }): Item & { type: "shape" } {
@@ -62,8 +52,7 @@ function defaultShapeAt(item: Item & { type: "shape" }): Item & { type: "shape" 
 type Gesture =
   | { kind: "draw"; item: Item & { type: "stroke" } }
   | { kind: "shape"; item: Item & { type: "shape" } }
-  | { kind: "move"; id: string; from: Point; dx: number; dy: number }
-  | { kind: "erase"; removed: Set<string> };
+  | { kind: "move"; id: string; from: Point; dx: number; dy: number };
 
 function ToolButton({
   label,
@@ -109,8 +98,8 @@ export function DoodleCanvas() {
   const [shape, setShape] = useState<ShapeKind>("rect");
   const [color, setColor] = useState(PALETTE[0]);
   const [menu, setMenu] = useState<Menu>(null);
-  // Client-only component (dynamic import with ssr: false), so storage is safe here.
-  const [board, setBoard] = useState<Board>(loadBoard);
+  // Always starts empty: nothing is kept between visits.
+  const [board, setBoard] = useState<Board>(EMPTY_BOARD);
   const [past, setPast] = useState<Board[]>([]);
   const [future, setFuture] = useState<Board[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
@@ -124,11 +113,11 @@ export function DoodleCanvas() {
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+      LEGACY_STORAGE_KEYS.forEach((key) => window.localStorage.removeItem(key));
     } catch {
       // storage unavailable
     }
-  }, [board]);
+  }, []);
 
   const commit = useCallback((next: Board) => {
     setPast((p) => [...p.slice(-60), boardRef.current]);
@@ -174,7 +163,6 @@ export function DoodleCanvas() {
 
     const g = gesture.current;
     for (const item of current.items) {
-      if (g?.kind === "erase" && g.removed.has(item.id)) continue;
       const shown = g?.kind === "move" && g.id === item.id ? moveItem(item, g.dx, g.dy) : item;
       drawItem(ctx, shown);
       if (item.id === selected) drawSelection(ctx, shown);
@@ -281,9 +269,6 @@ export function DoodleCanvas() {
         kind: "shape",
         item: { id: uid(), type: "shape", shape, color, fill: null, x1: p.x, y1: p.y, x2: p.x, y2: p.y },
       };
-    } else if (tool === "eraser") {
-      const hit = hitTest(items, p, 10);
-      gesture.current = { kind: "erase", removed: new Set(hit ? [hit.id] : []) };
     }
     canvasRef.current?.setPointerCapture(e.pointerId);
     render();
@@ -300,9 +285,6 @@ export function DoodleCanvas() {
     } else if (g.kind === "move") {
       g.dx = p.x - g.from.x;
       g.dy = p.y - g.from.y;
-    } else if (g.kind === "erase") {
-      const hit = hitTest(boardRef.current.items.filter((i) => !g.removed.has(i.id)), p, 10);
-      if (hit) g.removed.add(hit.id);
     }
     render();
   };
@@ -322,9 +304,6 @@ export function DoodleCanvas() {
       if (g.dx || g.dy) {
         commit({ ...current, items: current.items.map((i) => (i.id === g.id ? moveItem(i, g.dx, g.dy) : i)) });
       } else render();
-    } else if (g.kind === "erase") {
-      if (g.removed.size) commit({ ...current, items: current.items.filter((i) => !g.removed.has(i.id)) });
-      else render();
     }
   };
 
@@ -392,7 +371,17 @@ export function DoodleCanvas() {
             <ToolButton label={doodle.pencil} active={tool === "draw"} onClick={() => pickTool("draw")}>
               <PencilIcon />
             </ToolButton>
-            <ToolButton label={doodle.eraser} active={tool === "eraser"} onClick={() => pickTool("eraser")}>
+            {/* One click wipes the whole board (undo brings it back). */}
+            <ToolButton
+              label={doodle.clear}
+              disabled={!board.items.length && !board.background}
+              onClick={() => {
+                if (draftText) setDraftText(null);
+                commit(EMPTY_BOARD);
+                setSelected(null);
+                setMenu(null);
+              }}
+            >
               <EraserIcon />
             </ToolButton>
             <span className="mx-1 h-5 w-px bg-black/10" />
@@ -423,16 +412,6 @@ export function DoodleCanvas() {
             </ToolButton>
             <ToolButton label={doodle.redo} disabled={!future.length} onClick={redo}>
               <RedoIcon />
-            </ToolButton>
-            <ToolButton
-              label={doodle.clear}
-              disabled={!board.items.length && !board.background}
-              onClick={() => {
-                commit(EMPTY_BOARD);
-                setSelected(null);
-              }}
-            >
-              <TrashIcon />
             </ToolButton>
           </div>
 
