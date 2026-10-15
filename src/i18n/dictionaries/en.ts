@@ -373,11 +373,11 @@ export const en = {
         text: "Managed corporate and SaaS website projects from framing to launch: workshops, site maps, planning, developer coordination and acceptance testing.",
       },
       {
-        marker: "2017",
-        period: "2017 – 2020",
-        role: "Digital strategy consultant / Business analyst (AMOA)",
+        marker: "2018",
+        period: "2018 – 2019",
+        role: "Mobile Money & Product Strategy (AMOA)",
         org: "Orange Money",
-        text: "Defined and rolled out Orange Money's digital strategy from scratch across 4 high-growth markets in Africa and the Middle East: launched in 12 months, +30% revenue vs prior year.",
+        text: "Orange Money's product strategy and roadmap across 4 African markets (Cameroon, Côte d'Ivoire, Senegal, Mali), under executive committee governance: +30 to 40% on conversion, activation and retention.",
       },
       {
         marker: "2017",

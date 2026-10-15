@@ -583,10 +583,10 @@ export const caseStudiesFr: CaseStudy[] = [
   {
     slug: "orange-money",
     client: "Orange Money",
-    title: "Orange Money, une stratégie digitale sur 4 marchés",
+    title: "Orange Money, une stratégie produit sur 4 marchés africains",
     summary:
-      "Consultante stratégie digitale et AMOA\u00a0: définition et déploiement from scratch de la stratégie digitale d'Orange Money sur 4 marchés à forte croissance, en Afrique et au Moyen-Orient.",
-    period: "2017 – 2020",
+      "Mobile Money et stratégie produit (AMOA)\u00a0: stratégie et roadmap d'Orange Money au Cameroun, en Côte d'Ivoire, au Sénégal et au Mali, sous gouvernance CODIR, avec +30 à 40\u00a0% sur la conversion, l'activation et la rétention.",
+    period: "2018 – 2019",
     kind: "AMOA",
     tint: "from-[#ffe2c7] via-[#ff9a4d] to-[#e8590c]",
     cover: {
@@ -597,59 +597,65 @@ export const caseStudiesFr: CaseStudy[] = [
       frame: "plain",
     },
     meta: {
-      role: "Consultante stratégie digitale / AMOA",
-      period: "2017 – 2020",
+      role: "Mobile Money & Stratégie Produit (AMOA)",
+      period: "Oct. 2018 – sept. 2019",
       tools: "",
-      team: "Environ 60 personnes\u00a0: Marketing, IT, Compliance, opérateurs partenaires et équipes locales",
+      team: "Environ 60 personnes\u00a0: équipes techniques, fournisseurs de paiement, Marketing, Compliance et équipes métiers locales",
     },
     context: [
-      "Orange Money est le service de paiement mobile du groupe Orange, présent dans plus de 26 pays. J'intervenais comme consultante en stratégie digitale et AMOA auprès de la Direction Stratégie Digitale.",
-      "Mission\u00a0: définir et déployer from scratch la stratégie digitale d'Orange Money sur 4 marchés à forte croissance, en Afrique et au Moyen-Orient.",
+      "Orange Money est le service de mobile money du groupe Orange, présent dans plus de 26 pays\u00a0: envoi et réception d'argent, paiement marchand, paiement de factures, recharge. Il s'adresse à des marchés où la bancarisation est faible mais où le mobile est partout.",
+      "Ici, on ne déploie pas une app, on déploie un écosystème\u00a0: le service ne vaut que par son réseau d'agents de dépôt et de retrait, ses marchands acceptants et ses intégrations avec les facturiers et partenaires locaux. Et chaque pays est presque un produit différent\u00a0: réglementation, langue, maturité des usages, concurrence (MTN, Moov).",
+      "J'intervenais en AMOA auprès de la Direction Stratégie Digitale, pour définir et piloter la stratégie produit et la roadmap sur 4 marchés\u00a0: Cameroun, Côte d'Ivoire, Sénégal et Mali.",
     ],
     problem: {
       intro:
-        "Lancer un service de paiement mobile dans 4 pays, c'est tenir 4 cadres réglementaires, 4 écosystèmes de partenaires et autant d'équipes locales.",
+        "Même lancement, résultats opposés\u00a0: certains pays décollaient, d'autres stagnaient. Deux hypothèses concurrentes, qui ne se traitent pas au même endroit.",
       points: [
-        "Une conformité réglementaire propre à chaque marché.",
-        "Des opérateurs partenaires et des équipes locales à coordonner, marché par marché.",
-        "Des parcours digitaux à concevoir de bout en bout\u00a0: acquisition, virement, recharge.",
+        "Hypothèse A, la porte d'entrée\u00a0: des parcours d'acquisition (landing pages, onboarding, activation) calqués sur un modèle unique, mal adaptés à la langue, à la littératie numérique et à l'habitude du USSD face à l'app.",
+        "Hypothèse B, l'écosystème\u00a0: une fois inscrit, l'utilisateur ne trouve pas assez d'usages locaux (facturiers, marchands), parce que chaque intégration partenaire est refaite quasi sur mesure, pays par pays.",
       ],
     },
     role: [
       {
-        title: "Stratégie digitale",
-        text: "Définition et déploiement from scratch de la stratégie digitale d'Orange Money sur 4 marchés.",
+        title: "Stratégie produit et roadmap",
+        text: "Définition et pilotage de la stratégie produit et de la roadmap d'Orange Money sur 4 marchés, sous gouvernance CODIR.",
       },
       {
-        title: "Cadrage métier",
-        text: "Recueil des besoins avec le Marketing, l'IT et la Compliance, et conformité réglementaire propre à chaque marché.",
+        title: "Besoins et marché",
+        text: "Identification des besoins utilisateurs et des opportunités de marché par benchmarks et analyses concurrentielles.",
       },
       {
-        title: "Parcours et acquisition",
-        text: "Conception des parcours digitaux end-to-end (acquisition, virement, recharge), landing pages et pilotage des campagnes SEO par marché.",
+        title: "Spécifications",
+        text: "Rédaction des spécifications fonctionnelles des nouvelles fonctionnalités de paiement digital, suivies jusqu'au déploiement.",
       },
       {
-        title: "Pilotage et gouvernance",
-        text: "Coordination des opérateurs partenaires et des équipes locales, recette, suivi des KPIs de performance et reporting au CODIR.",
+        title: "Coordination",
+        text: "Coordination des équipes techniques, des fournisseurs de paiement et des équipes métiers locales.",
+      },
+      {
+        title: "Parcours et qualité UX",
+        text: "Amélioration continue des parcours Mobile Money, en tenant compte des réalités terrain et des usages locaux.",
       },
     ],
     approach: {
+      intro:
+        "Partir des données plutôt que de l'intuition, puis rendre visible un blocage que personne ne voyait côté utilisateur.",
       steps: [
         {
-          title: "Cadrer marché par marché",
-          text: "Besoins métier, contraintes réglementaires et partenaires opérateurs, pays par pays.",
+          title: "Lire la conversion",
+          text: "Les parcours d'entrée convertissaient à peu près pareil sur les marchés qui décollaient et sur ceux qui stagnaient\u00a0: le problème était après l'inscription.",
         },
         {
-          title: "Concevoir les parcours",
-          text: "Acquisition, virement et recharge pensés de bout en bout, déclinés pour chaque marché.",
+          title: "Creuser avec le terrain",
+          text: "Avec les équipes locales, le constat devient concret\u00a0: sur les marchés en retrait, peu de facturiers et de marchands, donc peu de raisons d'utiliser son compte.",
         },
         {
-          title: "Déployer",
-          text: "Coordination des équipes locales et des opérateurs jusqu'au lancement.",
+          title: "Chiffrer le blocage",
+          text: "Documentation des délais réels d'intégration des partenaires par pays, et du lien direct avec les écarts d'usage.",
         },
         {
-          title: "Mesurer et arbitrer",
-          text: "Recette, KPIs de performance et arbitrages en CODIR.",
+          title: "Porter l'arbitrage",
+          text: "Le sujet est monté en gouvernance jusqu'au CODIR, pour qu'un chantier invisible pour l'utilisateur ne perde pas face aux demandes locales visibles.",
         },
       ],
     },
@@ -673,19 +679,20 @@ export const caseStudiesFr: CaseStudy[] = [
     ],
     impact: {
       stats: [
-        { value: "4", label: "Marchés lancés en 12 mois" },
-        { value: "+30\u00a0%", label: "Chiffre d'affaires vs N-1" },
+        { value: "4", label: "Marchés pilotés\u00a0: Cameroun, Côte d'Ivoire, Sénégal, Mali" },
+        { value: "+30 à 40\u00a0%", label: "Conversion, activation et rétention" },
         { value: "26", label: "Pays où le groupe est présent" },
       ],
       points: [
-        "Lancement sur 4 marchés à forte croissance en 12 mois.",
-        "+30\u00a0% de chiffre d'affaires par rapport à l'année précédente.",
-        "Une gouvernance outillée\u00a0: recette, KPIs de performance et reporting CODIR.",
+        "+30 à 40\u00a0% sur les indicateurs de performance des parcours Mobile Money\u00a0: conversion, activation, rétention.",
+        "De nouvelles fonctionnalités de paiement digital spécifiées et suivies jusqu'au déploiement.",
+        "Les délais d'intégration des partenaires rendus visibles et chiffrés, et portés jusqu'au CODIR.",
       ],
     },
     learnings: [
+      "Une moyenne par marché cache presque toujours le vrai signal\u00a0: j'aurais dû segmenter la conversion par canal, USSD contre app, dès le départ. Un utilisateur habitué au USSD ne bascule pas sur l'app juste parce qu'elle existe.",
+      "Un chantier d'infrastructure invisible pour l'utilisateur perd toujours l'arbitrage face aux demandes visibles, sauf si quelqu'un le défend avec des chiffres.",
       "Un déploiement multi-pays se gagne marché par marché\u00a0: même produit, cadrages différents.",
-      "Impliquer la Compliance dès le cadrage évite de reconstruire les parcours après coup.",
     ],
   },
 ];

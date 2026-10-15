@@ -584,10 +584,10 @@ export const caseStudiesEn: CaseStudy[] = [
   {
     slug: "orange-money",
     client: "Orange Money",
-    title: "Orange Money, a digital strategy across 4 markets",
+    title: "Orange Money, a product strategy across 4 African markets",
     summary:
-      "Digital strategy consultant and business analyst (AMOA): defined and rolled out Orange Money's digital strategy from scratch across 4 high-growth markets in Africa and the Middle East.",
-    period: "2017 – 2020",
+      "Mobile Money and product strategy (AMOA): Orange Money's strategy and roadmap in Cameroon, Côte d'Ivoire, Senegal and Mali, under executive committee governance, with +30 to 40% on conversion, activation and retention.",
+    period: "2018 – 2019",
     kind: "Business analyst (AMOA)",
     tint: "from-[#ffe2c7] via-[#ff9a4d] to-[#e8590c]",
     cover: {
@@ -598,59 +598,65 @@ export const caseStudiesEn: CaseStudy[] = [
       frame: "plain",
     },
     meta: {
-      role: "Digital strategy consultant / Business analyst (AMOA)",
-      period: "2017 – 2020",
+      role: "Mobile Money & Product Strategy (AMOA)",
+      period: "Oct 2018 – Sep 2019",
       tools: "",
-      team: "About 60 people: Marketing, IT, Compliance, partner operators and local teams",
+      team: "About 60 people: tech teams, payment providers, Marketing, Compliance and local business teams",
     },
     context: [
-      "Orange Money is the Orange group's mobile payment service, present in more than 26 countries. I worked as a digital strategy consultant and business analyst (AMOA) for the Digital Strategy Department.",
-      "The mission: define and roll out Orange Money's digital strategy from scratch across 4 high-growth markets in Africa and the Middle East.",
+      "Orange Money is the Orange group's mobile money service, present in more than 26 countries: sending and receiving money, merchant payments, bill payments, top-ups. It serves markets where few people have a bank account but almost everyone has a phone.",
+      "You don't roll out an app here, you roll out an ecosystem: the service is only as good as its network of cash-in/cash-out agents, its accepting merchants and its integrations with local billers and partners. And each country is almost a different product: regulation, language, usage maturity, competition (MTN, Moov).",
+      "I worked as a business analyst (AMOA) for the Digital Strategy Department, defining and steering the product strategy and roadmap across 4 markets: Cameroon, Côte d'Ivoire, Senegal and Mali.",
     ],
     problem: {
       intro:
-        "Launching a mobile payment service in 4 countries means handling 4 regulatory frameworks, 4 partner ecosystems and as many local teams.",
+        "Same launch, opposite results: some countries took off, others stalled. Two competing hypotheses, each fixed in a different place.",
       points: [
-        "Regulatory compliance specific to each market.",
-        "Partner operators and local teams to coordinate, market by market.",
-        "End-to-end digital journeys to design: acquisition, transfers, top-ups.",
+        "Hypothesis A, the front door: acquisition journeys (landing pages, onboarding, activation) built on a single model, poorly suited to language, digital literacy and the habit of USSD over the app.",
+        "Hypothesis B, the ecosystem: once signed up, users didn't find enough local uses (billers, merchants), because every partner integration was rebuilt almost from scratch, country by country.",
       ],
     },
     role: [
       {
-        title: "Digital strategy",
-        text: "Defined and rolled out Orange Money's digital strategy from scratch across 4 markets.",
+        title: "Product strategy and roadmap",
+        text: "Defined and steered Orange Money's product strategy and roadmap across 4 markets, under executive committee governance.",
       },
       {
-        title: "Business framing",
-        text: "Gathered requirements with Marketing, IT and Compliance, and handled each market's regulatory compliance.",
+        title: "Needs and market",
+        text: "Identified user needs and market opportunities through benchmarks and competitive analysis.",
       },
       {
-        title: "Journeys and acquisition",
-        text: "Designed end-to-end digital journeys (acquisition, transfers, top-ups), landing pages and SEO campaigns per market.",
+        title: "Specifications",
+        text: "Wrote functional specifications for new digital payment features and followed them through to rollout.",
       },
       {
-        title: "Delivery and governance",
-        text: "Coordinated partner operators and local teams, acceptance testing, performance KPIs and executive committee reporting.",
+        title: "Coordination",
+        text: "Coordinated tech teams, payment providers and local business teams.",
+      },
+      {
+        title: "Journeys and UX quality",
+        text: "Continuously improved Mobile Money journeys, grounded in field realities and local usage.",
       },
     ],
     approach: {
+      intro:
+        "Start from the data rather than intuition, then make visible a blocker nobody could see from the user side.",
       steps: [
         {
-          title: "Frame market by market",
-          text: "Business needs, regulatory constraints and partner operators, country by country.",
+          title: "Read the conversion",
+          text: "Entry journeys converted about the same in markets that took off and in those that stalled: the problem came after sign-up.",
         },
         {
-          title: "Design the journeys",
-          text: "Acquisition, transfers and top-ups designed end to end, adapted to each market.",
+          title: "Dig in with the field",
+          text: "With local teams, the finding got concrete: lagging markets had few billers and merchants, so few reasons to use the account.",
         },
         {
-          title: "Roll out",
-          text: "Coordinating local teams and operators through launch.",
+          title: "Quantify the blocker",
+          text: "Documented actual partner integration lead times per country, and their direct link with the usage gaps.",
         },
         {
-          title: "Measure and decide",
-          text: "Acceptance testing, performance KPIs and executive committee decisions.",
+          title: "Take it to the top",
+          text: "Escalated through governance to the executive committee, so work invisible to users wouldn't lose out to visible local requests.",
         },
       ],
     },
@@ -674,19 +680,20 @@ export const caseStudiesEn: CaseStudy[] = [
     ],
     impact: {
       stats: [
-        { value: "4", label: "Markets launched in 12 months" },
-        { value: "+30%", label: "Revenue vs prior year" },
+        { value: "4", label: "Markets: Cameroon, Côte d'Ivoire, Senegal, Mali" },
+        { value: "+30–40%", label: "Conversion, activation and retention" },
         { value: "26", label: "Countries where the group operates" },
       ],
       points: [
-        "Launched in 4 high-growth markets within 12 months.",
-        "+30% revenue compared with the previous year.",
-        "Structured governance: acceptance testing, performance KPIs and executive reporting.",
+        "+30 to 40% on Mobile Money journey performance indicators: conversion, activation, retention.",
+        "New digital payment features specified and followed through to rollout.",
+        "Partner integration lead times made visible, quantified and taken to the executive committee.",
       ],
     },
     learnings: [
+      "A per-market average almost always hides the real signal: I should have segmented conversion by channel, USSD versus app, from the start. A user used to USSD doesn't switch to the app just because it exists.",
+      "Infrastructure work users never see always loses prioritisation to visible requests, unless someone defends it with numbers.",
       "A multi-country rollout is won market by market: same product, different framing.",
-      "Bringing Compliance in at the framing stage avoids rebuilding journeys later.",
     ],
   },
 ];

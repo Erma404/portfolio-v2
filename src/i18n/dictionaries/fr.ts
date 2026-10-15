@@ -377,11 +377,11 @@ export const fr: Dictionary = {
         text: "Pilotage de projets web corporate et SaaS, du cadrage à la mise en ligne\u00a0: ateliers, arborescences, planning, coordination des développeurs et recette.",
       },
       {
-        marker: "2017",
-        period: "2017 – 2020",
-        role: "Consultante stratégie digitale / AMOA",
+        marker: "2018",
+        period: "2018 – 2019",
+        role: "Mobile Money & Stratégie Produit (AMOA)",
         org: "Orange Money",
-        text: "Définition et déploiement from scratch de la stratégie digitale d'Orange Money sur 4 marchés à forte croissance, en Afrique et au Moyen-Orient\u00a0: lancement en 12 mois, +30\u00a0% de chiffre d'affaires vs N-1.",
+        text: "Stratégie produit et roadmap d'Orange Money sur 4 marchés africains (Cameroun, Côte d'Ivoire, Sénégal, Mali), sous gouvernance CODIR\u00a0: +30 à 40\u00a0% sur la conversion, l'activation et la rétention.",
       },
       {
         marker: "2017",
