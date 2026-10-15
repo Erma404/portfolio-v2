@@ -77,28 +77,22 @@ export const fr: Dictionary = {
     region: "Services",
     services: [
       {
-        icon: "target",
-        title: "Stratégie produit",
+        icon: "build",
+        title: "Product Build",
         description:
-          "Définir une vision et une roadmap claires, qui équilibrent besoins utilisateurs et résultats business mesurables.",
+          "Construire moi-même des produits qui fonctionnent, avec l'IA (Claude Code)\u00a0: e-commerce, back-offices, espaces clients et sites bilingues, du premier prototype à la mise en production.",
+      },
+      {
+        icon: "target",
+        title: "Stratégie produit et roadmap",
+        description:
+          "Définir une vision et une roadmap claires, puis prioriser sans concession avec des frameworks comme RICE et MoSCoW pour garder la delivery centrée sur un impact mesurable.",
       },
       {
         icon: "search",
-        title: "Discovery et recherche UX",
+        title: "Discovery et A/B testing",
         description:
-          "Entretiens utilisateurs, tests et analyse de données pour repérer les vrais points de friction avant de construire.",
-      },
-      {
-        icon: "flask",
-        title: "A/B testing",
-        description:
-          "Concevoir des expériences, lire les données et transformer les résultats en décisions produit assumées.",
-      },
-      {
-        icon: "briefcase",
-        title: "Conseil",
-        description:
-          "Accompagnement indépendant de grands groupes, PME et startups en Europe et en Afrique : audits, ateliers et appui opérationnel pour débloquer les équipes produit.",
+          "Entretiens utilisateurs, tests et analyse de données pour repérer les vrais points de friction, puis des expériences qui transforment les résultats en décisions produit assumées.",
       },
       {
         icon: "loop",
@@ -113,16 +107,10 @@ export const fr: Dictionary = {
           "Aligner direction, designers et développeurs sur des priorités communes et une même définition du « terminé ».",
       },
       {
-        icon: "bulb",
-        title: "Transformation digitale",
+        icon: "briefcase",
+        title: "Conseil et transformation digitale",
         description:
-          "Conseiller grands groupes, PME et startups sur leur stratégie digitale, de l'audit à la mise en œuvre.",
-      },
-      {
-        icon: "list",
-        title: "Backlog et roadmap",
-        description:
-          "Prioriser sans concession avec des frameworks comme RICE et MoSCoW pour garder la delivery centrée sur l'impact.",
+          "Accompagnement indépendant de grands groupes, PME et startups en Europe et en Afrique, de l'audit et des ateliers jusqu'à la mise en œuvre.",
       },
     ],
   },

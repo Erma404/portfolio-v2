@@ -1,27 +1,16 @@
 "use client";
 
-import {
-  Target,
-  Search,
-  FlaskConical,
-  RefreshCw,
-  Users,
-  Lightbulb,
-  ListChecks,
-  Briefcase,
-} from "lucide-react";
+import { Hammer, Target, Search, RefreshCw, Users, Briefcase } from "lucide-react";
 import { useDictionary } from "@/i18n/provider";
 import { SectionHeading } from "@/components/section-heading";
 import { SpatialSlider, type SpatialItem } from "@/components/spatial-slider";
 
 const ICONS: Record<string, React.ElementType> = {
+  build: Hammer,
   target: Target,
   search: Search,
-  flask: FlaskConical,
   loop: RefreshCw,
   people: Users,
-  bulb: Lightbulb,
-  list: ListChecks,
   briefcase: Briefcase,
 };
 

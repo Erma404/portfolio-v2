@@ -74,28 +74,22 @@ export const en = {
     region: "Services",
     services: [
       {
-        icon: "target",
-        title: "Product Strategy",
+        icon: "build",
+        title: "Product Build",
         description:
-          "Defining a clear vision and roadmap that balances user needs with measurable business outcomes.",
+          "Building working products myself with AI (Claude Code): e-commerce sites, back-offices, client portals and bilingual websites, from first prototype to production.",
+      },
+      {
+        icon: "target",
+        title: "Product Strategy & Roadmapping",
+        description:
+          "Defining a clear vision and roadmap, then prioritizing ruthlessly with frameworks like RICE and MoSCoW to keep delivery focused on measurable impact.",
       },
       {
         icon: "search",
-        title: "Discovery & UX Research",
+        title: "Discovery & A/B Testing",
         description:
-          "Running user interviews, testing and data analysis to uncover real friction points before building.",
-      },
-      {
-        icon: "flask",
-        title: "A/B Testing",
-        description:
-          "Designing experiments, reading the data, and turning results into confident product decisions.",
-      },
-      {
-        icon: "briefcase",
-        title: "Consulting",
-        description:
-          "Independent advisory for corporates, SMEs and startups across Europe and Africa — audits, workshops, and hands-on support to unblock product teams.",
+          "User interviews, testing and data analysis to uncover real friction points, then experiments that turn results into confident product decisions.",
       },
       {
         icon: "loop",
@@ -110,16 +104,10 @@ export const en = {
           "Aligning execs, designers and engineers around shared priorities and a common definition of done.",
       },
       {
-        icon: "bulb",
-        title: "Digital Transformation",
+        icon: "briefcase",
+        title: "Consulting & Digital Transformation",
         description:
-          "Advising corporates, SMEs and startups on digital strategy, from audit to execution.",
-      },
-      {
-        icon: "list",
-        title: "Backlog & Roadmapping",
-        description:
-          "Prioritizing ruthlessly with frameworks like RICE and MoSCoW to keep delivery focused on impact.",
+          "Independent advisory for corporates, SMEs and startups across Europe and Africa, from audit and workshops to hands-on execution.",
       },
     ],
   },
