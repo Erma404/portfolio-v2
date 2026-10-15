@@ -303,7 +303,7 @@ export const fr: Dictionary = {
     title: "Envie de faire grandir votre produit ?",
     text: "Que vous lanciez un nouveau produit ou que vous fassiez évoluer un produit existant, je peux vous aider. Parlez-moi de votre projet, je reviens vers vous sous 48 h.",
     email: "ernestinemtb@gmail.com",
-    linkedin: "https://www.linkedin.com/in/ernestinematjabo",
+    linkedin: "https://www.linkedin.com/in/ernestine-matjabo/",
     whatsapp: "33611109870",
     form: {
       name: "Nom",

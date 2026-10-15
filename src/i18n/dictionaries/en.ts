@@ -297,7 +297,7 @@ export const en = {
     title: "Ready to grow your product?",
     text: "Whether you're launching a new product or evolving an existing one, I can help. Tell me about your project and I'll get back to you within 48 hours.",
     email: "ernestinemtb@gmail.com",
-    linkedin: "https://www.linkedin.com/in/ernestinematjabo",
+    linkedin: "https://www.linkedin.com/in/ernestine-matjabo/",
     // International format, digits only (e.g. 33612345678). Form submissions open WhatsApp on this number.
     whatsapp: "33611109870",
     form: {
