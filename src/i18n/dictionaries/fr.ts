@@ -125,15 +125,8 @@ export const fr: Dictionary = {
   toolsShowcase: {
     eyebrow: "Expertise",
     title: "Je maîtrise les outils qui comptent.",
-    logos: ["planner", "jira", "figma", "claude", "contentsquare", "framer"],
+    logos: ["jira", "figma", "claude", "github", "supabase", "vercel", "contentsquare", "framer"],
     featured: [
-      {
-        icon: "planner",
-        name: "Microsoft Planner",
-        color: "#31752F",
-        description:
-          "Suivi des tâches et des sprints entre équipes, du grooming du backlog aux checklists de mise en production et aux daily.",
-      },
       {
         icon: "jira",
         name: "Jira",
@@ -154,6 +147,27 @@ export const fr: Dictionary = {
         color: "#D97757",
         description:
           "Recherche, rédaction et réflexion produit assistées par l'IA, du brouillon de user story à la synthèse des notes de discovery.",
+      },
+      {
+        icon: "github",
+        name: "GitHub",
+        color: "#FFFFFF",
+        description:
+          "Versionner chaque produit que je construis, avec des déploiements automatisés via GitHub Actions et GitHub Pages.",
+      },
+      {
+        icon: "supabase",
+        name: "Supabase",
+        color: "#3ECF8E",
+        description:
+          "Base de données, authentification et edge functions derrière les back-offices et espaces clients que je livre.",
+      },
+      {
+        icon: "vercel",
+        name: "Vercel",
+        color: "#FFFFFF",
+        description:
+          "Hébergement et déploiement des sites clients, avec un lien de prévisualisation pour chaque changement avant sa mise en ligne.",
       },
     ],
   },

@@ -122,15 +122,8 @@ export const en = {
   toolsShowcase: {
     eyebrow: "Expertise",
     title: "I'm highly skilled in the tools that matter.",
-    logos: ["planner", "jira", "figma", "claude", "contentsquare", "framer"],
+    logos: ["jira", "figma", "claude", "github", "supabase", "vercel", "contentsquare", "framer"],
     featured: [
-      {
-        icon: "planner",
-        name: "Microsoft Planner",
-        color: "#31752F",
-        description:
-          "Task and sprint tracking across teams, from backlog grooming to release checklists and daily stand-ups.",
-      },
       {
         icon: "jira",
         name: "Jira",
@@ -151,6 +144,27 @@ export const en = {
         color: "#D97757",
         description:
           "AI-assisted research, writing, and product thinking — from user story drafts to synthesizing discovery notes.",
+      },
+      {
+        icon: "github",
+        name: "GitHub",
+        color: "#FFFFFF",
+        description:
+          "Versioning every product I build, with automated deployments through GitHub Actions and GitHub Pages.",
+      },
+      {
+        icon: "supabase",
+        name: "Supabase",
+        color: "#3ECF8E",
+        description:
+          "Database, authentication and edge functions behind the back-offices and client portals I ship.",
+      },
+      {
+        icon: "vercel",
+        name: "Vercel",
+        color: "#FFFFFF",
+        description:
+          "Hosting and deploying client websites, with preview links for every change before it goes live.",
       },
     ],
   },

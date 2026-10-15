@@ -2,25 +2,29 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ClipboardList, BarChart3 } from "lucide-react";
-import { SiJira, SiFramer, SiFigma, SiClaude } from "react-icons/si";
+import { BarChart3 } from "lucide-react";
+import { SiJira, SiFramer, SiFigma, SiClaude, SiGithub, SiSupabase, SiVercel } from "react-icons/si";
 import { useDictionary } from "@/i18n/provider";
 import { RevealGroup, RevealItem, Reveal } from "@/components/reveal";
 
 const ICONS: Record<string, React.ElementType> = {
-  planner: ClipboardList,
   jira: SiJira,
   figma: SiFigma,
   claude: SiClaude,
+  github: SiGithub,
+  supabase: SiSupabase,
+  vercel: SiVercel,
   contentsquare: BarChart3,
   framer: SiFramer,
 };
 
 const COLORS: Record<string, string> = {
-  planner: "#31752F",
   jira: "#0052CC",
   figma: "#F24E1E",
   claude: "#D97757",
+  github: "#FFFFFF",
+  supabase: "#3ECF8E",
+  vercel: "#FFFFFF",
   contentsquare: "#E93379",
   framer: "#0055FF",
 };
@@ -77,11 +81,14 @@ export function ToolsShowcase() {
           </div>
         </div>
 
-        <RevealGroup className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <RevealGroup className="mt-16 flex flex-wrap justify-center gap-5">
           {toolsShowcase.featured.map((tool) => {
             const Icon = ICONS[tool.icon];
             return (
-              <RevealItem key={tool.name}>
+              <RevealItem
+                key={tool.name}
+                className="w-full sm:w-[calc(50%-10px)] lg:w-[calc(25%-15px)]"
+              >
                 <div className="group relative h-full">
                   <div
                     aria-hidden
