@@ -7,7 +7,7 @@
  */
 export const promptPackConfig = {
   /** false: 404 in production, noindex, absent from the sitemap. */
-  published: false,
+  published: true,
   /** "waitlist": email form only, no price. "sale": Gumroad button and price. */
   mode: "waitlist" as "waitlist" | "sale",
   /** Full Gumroad product URL. Required in "sale" mode. */
