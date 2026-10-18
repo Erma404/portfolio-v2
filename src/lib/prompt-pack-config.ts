@@ -13,8 +13,8 @@ export const promptPackConfig = {
   /** Full Gumroad product URL. Required in "sale" mode. */
   gumroadUrl: "",
   /** URL the email form POSTs to (MailerLite or Kit form). Required in "waitlist" mode. */
-  emailFormAction: "",
-  emailFieldName: "email",
+  emailFormAction: "https://app.kit.com/forms/10062604/subscriptions",
+  emailFieldName: "email_address",
   /** Public path of the free PDF, e.g. "/downloads/po-prompts-3f9a1c7e2b64d081.pdf". The file must exist in public/. Required in "waitlist" mode. */
   freeGiftPdfPath: "/downloads/po-prompts-aaeefe27bfe6215b.pdf",
   /** Where the form sends the visitor after a successful signup. The page itself is app/[lang]/prompt-pack/thanks. */
