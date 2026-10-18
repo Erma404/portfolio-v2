@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { promptPackVisible } from "./src/lib/prompt-pack-config";
+import { promptPackVisible, thanksVisible } from "./src/lib/prompt-pack-state";
 
 /**
  * English is served without a prefix ("/works"), French under "/fr".
@@ -12,9 +12,17 @@ import { promptPackVisible } from "./src/lib/prompt-pack-config";
 // pages from out/en/ to the root instead.
 const isPagesBuild = process.env.PAGES_BUILD === "1";
 
-// The /prompt-pack landing page only exists as a route when it is live (or in dev):
-// see src/lib/prompt-pack-config.ts. "pp.tsx" matches app/[lang]/prompt-pack/page.pp.tsx.
-const pageExtensions = ["tsx", "ts", "jsx", "js", ...(promptPackVisible ? ["pp.tsx"] : [])];
+// The /prompt-pack landing page and its thank-you page only exist as routes when they are
+// live (or in dev): see src/lib/prompt-pack-state.ts. "pp.tsx" matches
+// app/[lang]/prompt-pack/page.pp.tsx, "pt.tsx" matches prompt-pack/thanks/page.pt.tsx.
+const pageExtensions = [
+  "tsx",
+  "ts",
+  "jsx",
+  "js",
+  ...(promptPackVisible ? ["pp.tsx"] : []),
+  ...(thanksVisible ? ["pt.tsx"] : []),
+];
 
 const pagesConfig: NextConfig = {
   pageExtensions,
@@ -26,6 +34,10 @@ const pagesConfig: NextConfig = {
 
 const serverConfig: NextConfig = {
   pageExtensions,
+  // Free gift PDFs: out of search results (GitHub Pages cannot send headers, a server build can).
+  async headers() {
+    return [{ source: "/downloads/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] }];
+  },
   async redirects() {
     return [
       // One address per page: "/en/…" is the same as the unprefixed URL.

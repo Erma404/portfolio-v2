@@ -14,20 +14,23 @@ const fieldClass =
 
 /**
  * Plain HTML form that POSTs to the email provider, so it works without JavaScript.
- * With JavaScript it submits in the background and shows the result in place. If the
+ * With JavaScript it submits in the background, then opens the thank-you page. If the
  * provider refuses cross-origin requests (the fetch itself fails), it falls back to a
- * normal form submit, which lands on the provider's own confirmation page.
+ * normal form submit: the visitor lands on the provider's confirmation page, which should
+ * itself redirect to the thank-you page (see the README).
  */
 export function EmailForm({
   action,
   emailFieldName,
   roleFieldName,
   privacyPolicyUrl,
+  thankYouPath,
 }: {
   action: string;
   emailFieldName: string;
   roleFieldName: string;
   privacyPolicyUrl: string;
+  thankYouPath: string;
 }) {
   const uid = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -46,6 +49,8 @@ export function EmailForm({
       if (response.ok) {
         form.reset();
         setStatus("success");
+        // The download lives on the thank-you page.
+        window.location.assign(thankYouPath);
       } else {
         setStatus("error");
       }

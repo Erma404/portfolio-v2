@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { localizePath, locales, siteUrl } from "@/i18n/config";
 import { getCaseStudies } from "@/lib/case-studies";
-import { promptPackLive } from "@/lib/prompt-pack-config";
+import { promptPackLive } from "@/lib/prompt-pack-state";
 
 export const dynamic = "force-static";
 
