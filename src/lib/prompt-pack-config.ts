@@ -1,6 +1,9 @@
 /**
  * The PO Prompt Pack landing page (/prompt-pack): the only file to edit before launch.
  * See "PO Prompt Pack landing page" in README.md for what each field does.
+ *
+ * Data and pure helpers only, so client components can import it. What is live and
+ * what is missing is computed in prompt-pack-state.ts (it reads the file system).
  */
 export const promptPackConfig = {
   /** false: 404 in production, noindex, absent from the sitemap. */
@@ -12,6 +15,10 @@ export const promptPackConfig = {
   /** URL the email form POSTs to (MailerLite or Kit form). Required in "waitlist" mode. */
   emailFormAction: "",
   emailFieldName: "email",
+  /** Public path of the free PDF, e.g. "/downloads/po-prompts-3f9a1c7e2b64d081.pdf". The file must exist in public/. Required in "waitlist" mode. */
+  freeGiftPdfPath: "/downloads/po-prompts-aaeefe27bfe6215b.pdf",
+  /** Where the form sends the visitor after a successful signup. The page itself is app/[lang]/prompt-pack/thanks. */
+  thankYouPath: "/prompt-pack/thanks",
   /** Name of the provider's custom field for the role. Empty: the role dropdown is hidden. */
   roleFieldName: "",
   /** USD. Must match the price shown on Gumroad. */
@@ -28,27 +35,6 @@ export const promptPackConfig = {
 };
 
 const cfg = promptPackConfig;
-
-const isDev = process.env.NODE_ENV === "development";
-
-/** Fields the chosen mode cannot work without. */
-const missingFields: string[] =
-  cfg.mode === "sale"
-    ? cfg.gumroadUrl ? [] : ["gumroadUrl"]
-    : cfg.emailFormAction ? [] : ["emailFormAction"];
-
-/** Published and complete: the only state in which production serves the page. */
-export const promptPackLive = cfg.published && missingFields.length === 0;
-
-/** Live, or any state while developing locally. */
-export const promptPackVisible = promptPackLive || isDev;
-
-if (cfg.published && missingFields.length > 0) {
-  console.warn(
-    `\n[prompt-pack] published is true but mode "${cfg.mode}" needs: ${missingFields.join(", ")}. ` +
-      `The page is treated as NOT published (404, noindex, not in the sitemap).\n`,
-  );
-}
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -71,4 +57,9 @@ export function formatPriceEndDate(end: string) {
 /** The price a visitor pays today, for structured data. */
 export function currentPrice(now: Date = new Date()) {
   return isLaunchPriceActive(now) ? cfg.launchPrice : cfg.regularPrice;
+}
+
+/** Folder URLs on this site end with a slash (static export). Query and file extensions are left alone. */
+export function withTrailingSlash(path: string) {
+  return /[?#]|\.[a-z0-9]+$/i.test(path) ? path : path.replace(/\/?$/, "/");
 }
