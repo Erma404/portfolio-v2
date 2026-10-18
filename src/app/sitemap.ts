@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { localizePath, locales, siteUrl } from "@/i18n/config";
 import { getCaseStudies } from "@/lib/case-studies";
+import { promptPackLive } from "@/lib/prompt-pack-config";
 
 export const dynamic = "force-static";
 
@@ -9,7 +10,7 @@ const url = (path: string) => new URL(path, siteUrl).toString();
 /** Every page in both languages, each entry listing its translations. */
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = ["/", "/works", "/about", ...getCaseStudies("en").map((c) => `/works/${c.slug}`)];
-  return paths.flatMap((path) =>
+  const entries: MetadataRoute.Sitemap = paths.flatMap((path) =>
     locales.map((locale) => ({
       // Static export serves folders, so pages live at a trailing-slash URL.
       url: url(localizePath(locale, path).replace(/\/?$/, "/")),
@@ -22,4 +23,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     })),
   );
+  // English-only landing page, listed only once it is published and complete.
+  if (promptPackLive) {
+    entries.push({
+      url: url("/prompt-pack/"),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    });
+  }
+  return entries;
 }

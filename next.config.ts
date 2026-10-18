@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { promptPackVisible } from "./src/lib/prompt-pack-config";
 
 /**
  * English is served without a prefix ("/works"), French under "/fr".
@@ -11,7 +12,12 @@ import type { NextConfig } from "next";
 // pages from out/en/ to the root instead.
 const isPagesBuild = process.env.PAGES_BUILD === "1";
 
+// The /prompt-pack landing page only exists as a route when it is live (or in dev):
+// see src/lib/prompt-pack-config.ts. "pp.tsx" matches app/[lang]/prompt-pack/page.pp.tsx.
+const pageExtensions = ["tsx", "ts", "jsx", "js", ...(promptPackVisible ? ["pp.tsx"] : [])];
+
 const pagesConfig: NextConfig = {
+  pageExtensions,
   output: "export",
   trailingSlash: true,
   // No image server on GitHub Pages: images are served as-is.
@@ -19,6 +25,7 @@ const pagesConfig: NextConfig = {
 };
 
 const serverConfig: NextConfig = {
+  pageExtensions,
   async redirects() {
     return [
       // One address per page: "/en/…" is the same as the unprefixed URL.
