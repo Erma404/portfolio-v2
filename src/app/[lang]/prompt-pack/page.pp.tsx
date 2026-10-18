@@ -454,6 +454,16 @@ export default async function PromptPackPage(props: { params: Promise<{ lang: st
                     <div className="mt-8 w-full max-w-md">
                       <Form />
                     </div>
+                    <p className="mt-6 text-sm text-muted">
+                      Already convinced?{" "}
+                      <a
+                        href="https://ernestine61.gumroad.com/l/jjlbt"
+                        rel="noopener"
+                        className="text-foreground underline underline-offset-4 hover:text-[#b84a17]"
+                      >
+                        Get the full pack for $12 →
+                      </a>
+                    </p>
                   </>
                 )}
               </div>
