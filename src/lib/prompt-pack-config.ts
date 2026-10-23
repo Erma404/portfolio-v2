@@ -9,9 +9,9 @@ export const promptPackConfig = {
   /** false: 404 in production, noindex, absent from the sitemap. */
   published: true,
   /** "waitlist": email form only, no price. "sale": Gumroad button and price. */
-  mode: "waitlist" as "waitlist" | "sale",
+  mode: "sale" as "waitlist" | "sale",
   /** Full Gumroad product URL. Required in "sale" mode. */
-  gumroadUrl: "",
+  gumroadUrl: "https://ernestine61.gumroad.com/l/jjlbt",
   /** URL the email form POSTs to (MailerLite or Kit form). Required in "waitlist" mode. */
   emailFormAction: "https://app.kit.com/forms/10062604/subscriptions",
   emailFieldName: "email_address",
